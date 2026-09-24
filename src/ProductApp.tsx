@@ -1,56 +1,325 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useState } from 'react'
 import {
-  Activity, AlertTriangle, ArrowLeft, ArrowRight, BarChart3, Bell, Bot, Building2, Check,
-  CheckCircle2, ChevronRight, CircleDot, FileCheck2, Flag, Globe2, Headphones, Home,
-  LayoutDashboard, LayoutTemplate, MapPin, Megaphone, Menu, MessageSquareText, Mic2,
-  PenLine, Play, RefreshCcw, Rocket, Search, ShieldCheck, Sparkles, Target, TrendingUp,
-  UserCheck, Users, X, Zap,
+  ArrowRight, Bot, Check, ChevronRight, CircleHelp, CloudRain, Headphones,
+  Home, LayoutTemplate, Leaf, Megaphone, Menu, Mic2, PenLine, Rocket,
+  ShieldCheck, Target, TrendingUp, UserCheck, Users, X, Zap,
 } from 'lucide-react'
-import { civicCompatibility, getWorker, munActivities, nagarActivities, workers, type Activity as DemoActivity, type Worker, type WorkerId } from './productData'
-import { MunOperationsDemo, NagarOperationsDemo } from './OperationalDemos'
+import { GuidedDemo } from './OperationalDemos'
+import { IdeaMatcher } from './IdeaMatcher'
+import { demoProjects, getWorker, workers, type DemoProject, type Worker, type WorkerId } from './productData'
 
-type View = 'overview' | 'workers' | 'demos' | 'nagar' | 'mun' | 'pitch'
-const nav: {id:View;label:string;icon:typeof Home}[] = [
-  {id:'overview',label:'Overview',icon:Home},
-  {id:'workers',label:'AI Workers',icon:Bot},
-  {id:'demos',label:'Civic Demos',icon:LayoutDashboard},
-  {id:'pitch',label:'For AI Collective',icon:Rocket},
+type View = 'overview' | 'workers' | 'matcher' | 'demos' | 'fit' | DemoProject['id']
+
+const navigation: { id: Exclude<View, 'nagar' | 'flood'>; label: string }[] = [
+  { id: 'overview', label: 'Overview' },
+  { id: 'workers', label: 'AI Workers' },
+  { id: 'matcher', label: 'Build Your Team' },
+  { id: 'demos', label: 'Solution Demos' },
+  { id: 'fit', label: 'Hackathon Fit' },
 ]
-const workerIcons:Record<WorkerId,typeof Bot>={voice:Mic2,service:Headphones,growth:TrendingUp,success:UserCheck,content:PenLine,campaign:Megaphone,landing:LayoutTemplate}
 
-function Badge({children,tone='neutral'}:{children:React.ReactNode;tone?:'neutral'|'cyan'|'green'|'amber'|'purple'|'red'}){return <span className={`badge ${tone}`}><i/>{children}</span>}
-function WorkerIcon({worker,size='md'}:{worker:Worker;size?:'sm'|'md'|'lg'}){const Icon=workerIcons[worker.id];return <span className={`worker-icon ${size}`} style={{'--accent':worker.accent} as React.CSSProperties}><Icon/></span>}
-function Button({children,onClick,kind='primary',disabled=false}:{children:React.ReactNode;onClick?:()=>void;kind?:'primary'|'secondary'|'ghost';disabled?:boolean}){return <button className={`button ${kind}`} onClick={onClick} disabled={disabled}>{children}</button>}
-function SectionTitle({eyebrow,title,copy,action}:{eyebrow:string;title:string;copy?:string;action?:React.ReactNode}){return <header className="section-title"><div><span>{eyebrow}</span><h1>{title}</h1>{copy&&<p>{copy}</p>}</div>{action}</header>}
-
-function Shell({view,go,children}:{view:View;go:(v:View)=>void;children:React.ReactNode}){
-  const [open,setOpen]=useState(false)
-  return <div className="shell"><div className={`scrim ${open?'show':''}`} onClick={()=>setOpen(false)}/><aside className={`sidebar ${open?'open':''}`}><button className="brand" onClick={()=>go('overview')}><span><Zap/></span><div>ezassist<small>AI WORKFORCE</small></div></button><p className="nav-label">EXPLORE</p><nav>{nav.map(item=><button className={view===item.id||(['nagar','mun'].includes(view)&&item.id==='demos')?'active':''} key={item.id} onClick={()=>{go(item.id);setOpen(false)}}><item.icon/>{item.label}<ChevronRight/></button>)}</nav><div className="side-proof"><ShieldCheck/><b>Responsible prototype</b><p>Simulated workflows. Human approval remains mandatory.</p></div><small className="side-foot">PROPOSED FOR AI COLLECTIVE EVALUATION</small></aside><div className="app-body"><header className="topbar"><button className="mobile-menu" onClick={()=>setOpen(true)} aria-label="Open navigation"><Menu/></button><div/><Badge tone="purple">Hack for Humanity BD</Badge><Badge tone="cyan">Compatibility MVP</Badge><button className="bell" aria-label="Demo activity"><Bell/></button><span className="team-avatar">EZ</span></header><main>{children}</main><footer><span>Ezassist civic-solution compatibility prototype</span><span>All organizations, cases, activities, and metrics are simulated.</span></footer></div></div>
+const workerIcons: Record<WorkerId, typeof Bot> = {
+  voice: Mic2,
+  service: Headphones,
+  growth: TrendingUp,
+  success: UserCheck,
+  content: PenLine,
+  campaign: Megaphone,
+  landing: LayoutTemplate,
 }
 
-function Overview({go}:{go:(v:View)=>void}){
-  return <div className="page"><section className="hero"><div className="hero-copy"><Badge tone="cyan">7 SPECIALISTS • 1 COORDINATED WORKFORCE</Badge><h1>From civic challenge to <em>deployable solution.</em></h1><p>Ezassist coordinates specialized AI workers to help design, operate, communicate, and measure civic and humanitarian workflows—while people retain control of important decisions.</p><div className="actions"><Button onClick={()=>go('demos')}>Explore the demos <ArrowRight/></Button><Button kind="secondary" onClick={()=>go('pitch')}>Why AI Collective should evaluate us</Button></div><small>Frontend compatibility prototype. No official AI Collective, MUN Alert, Facebook, or government partnership is implied.</small></div><div className="workforce-map"><div className="map-core"><Zap/><b>EZASSIST</b><small>COORDINATING</small></div>{workers.map((worker,i)=><div className={`map-worker mw-${i+1}`} key={worker.id}><WorkerIcon worker={worker} size="sm"/><span>{worker.name.replace(' Executive','').replace(' Designer','')}</span></div>)}<span className="orbit one"/><span className="orbit two"/></div></section>
-    <section className="thesis-bar"><div><Bot/><span><b>Specialized</b><small>Focused workers, not one generic chatbot</small></span></div><div><Activity/><span><b>Coordinated</b><small>Shared workflow and visible handoffs</small></span></div><div><ShieldCheck/><span><b>Accountable</b><small>Human approval at consequential steps</small></span></div><div><LayoutTemplate/><span><b>Reusable</b><small>Templates adapt across civic problems</small></span></div></section>
-    <section className="portfolio-intro"><div><span className="eyebrow">TWO PROOFS OF COMPATIBILITY</span><h2>One workforce. Two very different responsibilities.</h2><p>The demos test whether the same seven-worker architecture can support both a scalable civic product and a sensitive humanitarian workflow.</p></div><div className="portfolio-cards"><DemoCard type="commercial" onClick={()=>go('nagar')}/><DemoCard type="humanitarian" onClick={()=>go('mun')}/></div></section>
-    <section className="build-flow"><span className="eyebrow">WHAT THE WORKERS BUILD</span><div>{[['01','Understand','Citizen and operator needs'],['02','Design','Workflow, interface, and controls'],['03','Prepare','Content, outreach, and service actions'],['04','Govern','Human verification and approval'],['05','Measure','Pilot outcomes and learning']].map(([n,a,b],i)=><article key={a}><span>{n}</span><b>{a}</b><small>{b}</small>{i<4&&<ArrowRight/>}</article>)}</div></section>
-  </div>
+function WorkerMark({ id, label = true }: { id: WorkerId; label?: boolean }) {
+  const worker = getWorker(id)
+  const Icon = workerIcons[id]
+  return (
+    <span className="worker-mark" style={{ '--worker-color': worker.accent } as React.CSSProperties}>
+      <span><Icon aria-hidden="true" /></span>
+      {label && <b>{worker.shortName}</b>}
+    </span>
+  )
 }
 
-function DemoCard({type,onClick}:{type:'commercial'|'humanitarian';onClick:()=>void}){const commercial=type==='commercial';return <article className={`demo-card ${type}`}><div className="demo-card-top"><span>{commercial?<Building2/>:<Flag/>}</span><Badge tone={commercial?'green':'red'}>{commercial?'Commercial civic platform':'Humanitarian concept'}</Badge></div><small>{commercial?'DEMO 01 • NAGARSATHI':'DEMO 02 • MUN ALERT COMPATIBILITY'}</small><h3>{commercial?'Build and operate responsive city services.':'Prepare urgent public alerts responsibly.'}</h3><p>{commercial?'A hackathon waste-service idea expands into a configurable civic operations platform.':'A fictional missing-child training scenario tests high-stakes coordination, privacy, and authority control.'}</p><div className="mini-proof">{commercial?<><span><Check/>Business expansion path</span><span><Check/>Reusable service templates</span><span><Check/>Pilot measurement</span></>:<><span><Check/>Authority verification gate</span><span><Check/>Simulated Facebook reach plan</span><span><Check/>No real child data</span></>}</div><Button kind="ghost" onClick={onClick}>Open {commercial?'NagarSathi':'humanitarian'} demo <ArrowRight/></Button></article>}
+function AppHeader({ view, go }: { view: View; go: (view: View) => void }) {
+  const [open, setOpen] = useState(false)
+  const activeView = view === 'nagar' || view === 'flood' ? 'demos' : view
+  return (
+    <header className="site-header">
+      <button className="wordmark" onClick={() => go('overview')} aria-label="Ezassist home">
+        <span><Zap aria-hidden="true" /></span>
+        <strong>ezassist</strong>
+      </button>
+      <button className="menu-button" onClick={() => setOpen(value => !value)} aria-label="Toggle navigation">
+        {open ? <X /> : <Menu />}
+      </button>
+      <nav className={open ? 'open' : ''} aria-label="Main navigation">
+        {navigation.map(item => (
+          <button
+            key={item.id}
+            className={activeView === item.id ? 'active' : ''}
+            onClick={() => { go(item.id); setOpen(false) }}
+          >
+            {item.label}
+          </button>
+        ))}
+      </nav>
+      <span className="prototype-label">Interactive prototype</span>
+    </header>
+  )
+}
 
-function WorkersView(){const [query,setQuery]=useState(''),[selected,setSelected]=useState<Worker|null>(null);const visible=workers.filter(w=>(w.name+w.civicRole+w.capabilities.join()).toLowerCase().includes(query.toLowerCase()));return <div className="page"><SectionTitle eyebrow="THE EZASSIST WORKFORCE" title="Seven specialists across the civic-solution lifecycle." copy="Each worker produces a focused artifact. Together they form an accountable end-to-end workflow."/><div className="search"><Search/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search worker roles or capabilities" aria-label="Search workers"/></div><div className="worker-grid">{visible.map(worker=><article className="worker-card" key={worker.id}><div><WorkerIcon worker={worker}/><Badge tone="green">Demo ready</Badge></div><small>{worker.civicRole.toUpperCase()}</small><h3>{worker.name}</h3><p>{worker.description}</p><div className="tags">{worker.capabilities.map(x=><span key={x}>{x}</span>)}</div><Button kind="ghost" onClick={()=>setSelected(worker)}>View civic role <ArrowRight/></Button></article>)}</div><section className="compatibility"><div><span className="eyebrow">MODULAR BY DESIGN</span><h2>Recombine workers for the problem—not the other way around.</h2></div>{civicCompatibility.map(([problem,ids])=><div className="compat-row" key={problem}><b>{problem}</b><div>{ids.map(id=><WorkerIcon key={id} worker={getWorker(id)} size="sm"/>)}</div><span>{ids.length} workers</span></div>)}</section>{selected&&<div className="modal-wrap"><div className="backdrop" onClick={()=>setSelected(null)}/><div className="modal"><button className="close" onClick={()=>setSelected(null)} aria-label="Close"><X/></button><WorkerIcon worker={selected} size="lg"/><Badge tone="cyan">{selected.civicRole}</Badge><h2>{selected.name}</h2><p>{selected.description}</p><h4>PRODUCES IN THESE DEMOS</h4><div className="modal-outputs"><div><Building2/><b>NagarSathi</b><span>{nagarActivities.find(a=>a.worker===selected.id)?.output}</span></div><div><Flag/><b>MUN Alert concept</b><span>{munActivities.find(a=>a.worker===selected.id)?.output}</span></div></div><div className="human-note"><ShieldCheck/><span><b>Human accountability</b><small>Worker output is prepared for review; it does not trigger an external action.</small></span></div></div></div>}</div>}
+function Overview({ go }: { go: (view: View) => void }) {
+  return (
+    <div className="page overview-page">
+      <section className="hero">
+        <div className="hero-copy">
+          <span className="kicker">Technology partner showcase for Hack for Humanity Bangladesh 2026</span>
+          <h1>Seven workers.<br />One solution.</h1>
+          <p>See what each Ezassist worker does, then follow how the right workers combine around a real civic problem.</p>
+          <div className="hero-actions">
+            <button className="primary-button" onClick={() => go('matcher')}>Match workers to your idea <ArrowRight /></button>
+            <button className="secondary-button" onClick={() => go('workers')}>Learn how workers work</button>
+          </div>
+        </div>
+        <div className="hero-visual" aria-label="Ezassist worker orchestration overview">
+          <div className="orchestration-core"><Zap /><strong>Ezassist</strong><span>coordinates the workflow</span></div>
+          <div className="orchestration-workers">
+            {workers.map(worker => <WorkerMark key={worker.id} id={worker.id} />)}
+          </div>
+          <div className="orchestration-result"><Check /><span><b>Reviewable output</b><small>A person decides what happens next</small></span></div>
+        </div>
+      </section>
 
-function DemosView({go}:{go:(v:View)=>void}){return <div className="page"><SectionTitle eyebrow="CIVIC COMPATIBILITY PORTFOLIO" title="Test the workforce against two different realities." copy="NagarSathi proves commercial expandability. The MUN Alert concept proves responsible coordination under humanitarian urgency."/><div className="large-demo-grid"><DemoCard type="commercial" onClick={()=>go('nagar')}/><DemoCard type="humanitarian" onClick={()=>go('mun')}/></div><section className="compare"><div className="compare-head"><span>Dimension</span><span>NagarSathi</span><span>MUN Alert concept</span></div>{[['Purpose','Commercial civic operations','Humanitarian alert support'],['Starting input','Resident service complaint','Fictional missing-child report'],['Primary decision maker','Service coordinator','Authorized human / authority'],['External action','Service response and assignment','Emergency alert distribution'],['Critical safeguard','Operator approval','Authority verification and authorization'],['Expansion path','Multi-service civic platform','Humanitarian compatibility evidence']].map(row=><div key={row[0]}>{row.map(x=><span key={x}>{x}</span>)}</div>)}</section><div className="portfolio-claim"><Sparkles/><div><b>The proof is architectural, not sector-specific.</b><p>The same workers create different outputs, approval rules, and measurements based on the risk and purpose of the workflow.</p></div></div></div>}
+      <section className="simple-section how-it-works">
+        <div className="section-heading">
+          <h2>The idea in four moves</h2>
+          <p>Workers do focused jobs. Ezassist connects their outputs into one understandable workflow.</p>
+        </div>
+        <div className="four-moves">
+          {[
+            ['A real need', 'A voice report, service request, or communication goal enters the solution.'],
+            ['The right workers', 'Only the specialists needed for that problem become part of the workflow.'],
+            ['Clear outputs', 'Every worker produces an artifact the next person or worker can use.'],
+            ['Human decision', 'Important actions stay visible and require an accountable person.'],
+          ].map(([title, body], index) => (
+            <article key={title}><span>{index + 1}</span><h3>{title}</h3><p>{body}</p></article>
+          ))}
+        </div>
+      </section>
 
-function ActivityTimeline({activities,step,running}:{activities:DemoActivity[];step:number;running:boolean}){return <div className="timeline">{activities.map((item,i)=>{const worker=getWorker(item.worker),done=i<step,active=running&&i===step;return <div className={`timeline-row ${done?'done':''} ${active?'active':''}`} key={`${item.worker}-${i}`}><div className="timeline-track"/><WorkerIcon worker={worker} size="sm"/><div><div className="timeline-title"><b>{worker.name}</b>{done?<Badge tone={item.approval?'amber':'green'}>{item.approval?'Prepared for approval':'Completed'}</Badge>:active?<Badge tone="cyan">Processing</Badge>:<Badge>Queued</Badge>}</div><p>{item.action}</p><small>{done?item.output:active?'Processing simulated input…':'Waiting for prior stage'}</small></div></div>})}</div>}
+      <section className="simple-section overview-demos">
+        <div className="section-heading">
+          <h2>Two problems. Two worker teams.</h2>
+          <p>The same workforce adapts to the problem instead of forcing every worker into every solution.</p>
+        </div>
+        <div className="project-pair">
+          {demoProjects.map((project, index) => (
+            <article key={project.id} className="project-card">
+              <span className="project-icon">{index === 0 ? <Leaf /> : <CloudRain />}</span>
+              <div>
+                <small>{project.track}</small>
+                <h3>{project.name}</h3>
+                <p>{project.problem}</p>
+                <div className="worker-row">{project.workers.map(id => <WorkerMark key={id} id={id} label={false} />)}</div>
+              </div>
+              <button onClick={() => go(project.id)}>Open guided demo <ArrowRight /></button>
+            </article>
+          ))}
+        </div>
+      </section>
+    </div>
+  )
+}
 
-function useDemo(activities:DemoActivity[]){const [step,setStep]=useState(0),[running,setRunning]=useState(false);useEffect(()=>{if(!running)return;if(step>=activities.length){setRunning(false);return}const t=setTimeout(()=>setStep(s=>s+1),650);return()=>clearTimeout(t)},[running,step,activities.length]);const run=()=>{setStep(0);setRunning(true)};const reset=()=>{setStep(0);setRunning(false)};return{step,running,run,reset,complete:step>=activities.length}}
+function WorkerDetails({ worker }: { worker: Worker }) {
+  const Icon = workerIcons[worker.id]
+  return (
+    <section className="worker-detail" aria-live="polite">
+      <div className="worker-detail-title" style={{ '--worker-color': worker.accent } as React.CSSProperties}>
+        <span><Icon /></span>
+        <div><small>{worker.shortName} specialist</small><h2>{worker.name}</h2></div>
+      </div>
+      <p className="worker-purpose">{worker.businessNeed}</p>
+      <div className="worker-flow">
+        <div><span>Receives</span><strong>{worker.input}</strong></div>
+        <ChevronRight />
+        <div><span>Does</span><strong>{worker.work}</strong></div>
+        <ChevronRight />
+        <div><span>Produces</span><strong>{worker.output}</strong></div>
+      </div>
+      <div className="human-check"><ShieldCheck /><span><b>Human checkpoint</b>{worker.humanCheck}</span></div>
+    </section>
+  )
+}
 
-function NagarDemo({back}:{back:()=>void}){const demo=useDemo(nagarActivities);const [approved,setApproved]=useState(false);const reset=()=>{demo.reset();setApproved(false)};return <div className="page demo-page"><button className="back-link" onClick={back}><ArrowLeft/>Civic demos</button><SectionTitle eyebrow="DEMO 01 • COMMERCIAL CIVIC PLATFORM" title="NagarSathi Waste Operations" copy="A simulated path from resident complaint to an accountable service workflow—and from hackathon prototype to configurable civic product." action={<Badge tone="green">Commercial expansion demo</Badge>}/><div className="scenario commercial"><Building2/><div><small>FICTIONAL TRAINING SCENARIO</small><b>A Mirpur resident reports that waste has not been collected for three days.</b></div><Badge tone="amber">Operator approval required</Badge></div><section className="problem-chain">{[['User problem','Reporting and tracking service issues is difficult'],['Workflow bottleneck','Fragmented intake, routing, and follow-up'],['AI intervention','Structure, coordinate, draft, and measure'],['Human decision','Verify schedule and approve the response'],['Operational value','A repeatable and visible resolution workflow']].map(([a,b],i)=><div key={a}><small>{a}</small><b>{b}</b>{i<4&&<ArrowRight/>}</div>)}</section><div className="demo-layout"><div><section className="panel intake"><div className="panel-head"><span><Mic2/></span><div><h2>Resident issue intake</h2><p>Bangla voice translated for the operator view</p></div><Badge tone="purple">Simulated transcript</Badge></div><blockquote>“Waste has not been collected from our lane for three days. The bin is overflowing and residents are worried about the smell.”</blockquote><div className="facts"><div><small>LOCATION</small><b>Mirpur, Dhaka</b></div><div><small>CATEGORY</small><b>Missed collection</b></div><div><small>URGENCY</small><b>Medium-high</b></div><div><small>STATUS</small><b>Awaiting review</b></div></div><div className="panel-action"><Button onClick={()=>{setApproved(false);demo.run()}} disabled={demo.running}><Play/>{demo.running?'Workforce running…':demo.complete?'Run again':'Run AI Workforce'}</Button></div></section><section className="panel"><div className="panel-head"><span><Activity/></span><div><h2>Coordinated worker activity</h2><p>{demo.step} of {nagarActivities.length} stages complete</p></div></div><div className="progress"><span style={{width:`${demo.step/nagarActivities.length*100}%`}}/></div><ActivityTimeline activities={nagarActivities} step={demo.step} running={demo.running}/></section></div><aside><section className="panel sticky"><div className="panel-head"><span><FileCheck2/></span><div><h2>Operator recommendation</h2><p>Prepared—not automatically sent</p></div></div>{approved&&<div className="success-box"><CheckCircle2/><div><b>Approved in local demo</b><small>No external message or assignment was sent.</small></div></div>}<div className="response"><small>SUGGESTED RESPONSE • ENGLISH</small><p>Thank you for reporting this issue. The missed-collection report has been prepared for coordinator review. We will update the service status after confirmation.</p></div><div className="response bangla"><small>প্রস্তাবিত উত্তর • বাংলা</small><p>সমস্যাটি জানানোর জন্য ধন্যবাদ। বর্জ্য সংগ্রহ না হওয়ার অভিযোগটি সমন্বয়কারীর পর্যালোচনার জন্য প্রস্তুত করা হয়েছে। নিশ্চিত হওয়ার পর সেবার অবস্থা জানানো হবে।</p></div><div className="approval-note"><ShieldCheck/><div><b>Human decision point</b><p>Coordinator verifies the pickup schedule before approving any response or assignment.</p></div></div><div className="decision-buttons"><Button onClick={()=>setApproved(true)} disabled={!demo.complete||approved}><Check/>Approve recommendation</Button><Button kind="secondary" onClick={reset}><RefreshCcw/>Reset</Button></div></section></aside></div><section className="artifacts"><div><span className="eyebrow">WHAT THE WORKFORCE BUILT</span><h2>Seven artifacts—not seven disconnected conversations.</h2></div><div className="artifact-grid">{nagarActivities.map(item=>{const worker=getWorker(item.worker);return <article key={item.worker}><WorkerIcon worker={worker} size="sm"/><small>{worker.name}</small><b>{item.output}</b></article>})}</div></section><section className="maturity"><span className="eyebrow">COMMERCIAL EXPANSION PATH</span><div>{[['NOW','Hackathon MVP','Mock intake, workflow, approval, and analytics'],['NEXT','Controlled pilot','One organization, service zone, real operators, measured baseline'],['THEN','Deployable product','Authentication, roles, records, audit, notifications, integrations'],['SCALE','Civic platform','Multi-tenant templates for waste, drainage, roads, and facilities']].map(([a,b,c],i)=><article key={a}><span>0{i+1}</span><Badge tone={i===0?'green':i===1?'cyan':'purple'}>{a}</Badge><h3>{b}</h3><p>{c}</p></article>)}</div><p className="evidence-note">Roadmap and value are product hypotheses. Production outcomes require a real pilot.</p></section></div>}
+const smeJourney: { worker: WorkerId; phase: string; action: string; result: string }[] = [
+  { worker: 'landing', phase: 'Create a place to buy', action: 'Build a simple mobile order page for the bakery.', result: 'Customers can view products and place an inquiry.' },
+  { worker: 'content', phase: 'Explain the offer', action: 'Write clear Bangla and English product descriptions.', result: 'Customers understand products, prices, and delivery.' },
+  { worker: 'campaign', phase: 'Reach local customers', action: 'Prepare a neighborhood social campaign.', result: 'The bakery has a focused plan to attract interest.' },
+  { worker: 'voice', phase: 'Capture inquiries', action: 'Turn customer voice messages into structured requests.', result: 'Spoken questions become usable order details.' },
+  { worker: 'service', phase: 'Handle each request', action: 'Classify the inquiry and recommend the next response.', result: 'Urgent and normal requests reach the right person.' },
+  { worker: 'success', phase: 'Follow up after the order', action: 'Prepare confirmation, delivery, feedback, and return messages.', result: 'Customers stay informed and receive consistent care.' },
+  { worker: 'growth', phase: 'Learn what works', action: 'Compare inquiries, orders, repeat customers, and campaign activity.', result: 'The owner receives practical ideas for the next month.' },
+]
 
-type MunStatus='draft'|'prepared'|'verification'|'authorized'|'closed'
-function MunDemo({back}:{back:()=>void}){const demo=useDemo(munActivities);const [status,setStatus]=useState<MunStatus>('draft');const run=()=>{setStatus('draft');demo.run()};const reset=()=>{demo.reset();setStatus('draft')};useEffect(()=>{if(demo.complete&&status==='draft')setStatus('prepared')},[demo.complete,status]);const statusLabel={draft:'Draft training report',prepared:'Prepared for verification',verification:'Awaiting simulated authority decision',authorized:'Authorized for simulated preview',closed:'Training case closed'}[status];return <div className="page demo-page mun-page"><button className="back-link" onClick={back}><ArrowLeft/>Civic demos</button><SectionTitle eyebrow="DEMO 02 • HUMANITARIAN COMPATIBILITY" title="MUN Alert AI Response Studio" copy="A fictional training workflow for preparing a missing-child alert with privacy safeguards, authority verification, and responsible public reach." action={<Badge tone="red">Not an official integration</Badge>}/><div className="safety-banner"><AlertTriangle/><div><b>Fictional training scenario—no real child or active emergency.</b><p>This concept does not submit a report, contact an authority, access Facebook, or publish an alert.</p></div></div><div className="mun-disclaimer"><ShieldCheck/><p><b>Authority boundary:</b> AI workers prepare and organize information. Only an authorized human or relevant authority may verify a case and approve, suspend, or close an alert.</p><Badge tone="amber">Human authorization mandatory</Badge></div><div className="demo-layout"><div><section className="panel report-card"><div className="panel-head"><span><Flag/></span><div><h2>Fictional report draft</h2><p>Minimal data for a safe product demonstration</p></div><Badge tone="purple">TRAINING ONLY</Badge></div><div className="child-summary"><div className="child-placeholder"><Users/><small>NO REAL PHOTO</small></div><div><small>TRAINING IDENTIFIER</small><h3>Demo Child A</h3><p><MapPin/>General area: Mirpur, Dhaka</p><p><CircleDot/>Last seen: Simulated time</p></div></div><div className="report-facts"><div><small>AGE RANGE</small><b>School-age child</b></div><div><small>CLOTHING</small><b>Blue shirt • demo detail</b></div><div><small>CASE ID</small><b>TRAINING-MUN-001</b></div><div><small>STATUS</small><b>{statusLabel}</b></div></div><div className="privacy-line"><ShieldCheck/>Exact address, contact details, and sensitive identifiers are intentionally excluded.</div><div className="panel-action"><Button onClick={run} disabled={demo.running}><Play/>{demo.running?'Preparing alert package…':demo.complete?'Prepare again':'Run AI Preparation'}</Button></div></section><section className="panel"><div className="panel-head"><span><Activity/></span><div><h2>Humanitarian worker activity</h2><p>{demo.step} of {munActivities.length} stages complete</p></div></div><div className="progress red"><span style={{width:`${demo.step/munActivities.length*100}%`}}/></div><ActivityTimeline activities={munActivities} step={demo.step} running={demo.running}/></section></div><aside><section className="panel sticky verification"><div className="panel-head"><span><ShieldCheck/></span><div><h2>Verification & authorization</h2><p>Consequence increases at every gate</p></div></div><div className="gate-list">{[['Report structured',demo.complete],['Reporter confirmation',status==='verification'||status==='authorized'||status==='closed'],['Authority verification',status==='authorized'||status==='closed'],['Distribution authorization',status==='authorized'||status==='closed'],['Closure authorized',status==='closed']].map(([label,done],i)=><div className={done?'done':''} key={label as string}><span>{done?<Check/>:i+1}</span><b>{label as string}</b><small>{done?'Completed in simulation':'Pending human action'}</small></div>)}</div><div className="authority-actions">{status==='prepared'&&<Button onClick={()=>setStatus('verification')}><UserCheck/>Send to simulated verification</Button>}{status==='verification'&&<Button onClick={()=>setStatus('authorized')}><ShieldCheck/>Authorize simulated preview</Button>}{status==='authorized'&&<Button onClick={()=>setStatus('closed')}><Check/>Close training case</Button>}<Button kind="secondary" onClick={reset}><RefreshCcw/>Reset scenario</Button></div></section></aside></div><section className="distribution"><div className="distribution-copy"><span className="eyebrow">DIGITAL CAMPAIGN EXECUTIVE • EMERGENCY REACH</span><h2>Prepare public reach without automating authority.</h2><p>The campaign worker produces geographic and channel-ready concepts only after facts are reviewed. Engagement is not optimized at the expense of safety or accuracy.</p><div className="channel-list"><span>Facebook feed concept</span><span>Messenger alert concept</span><span>Instagram story concept</span><span>Shareable bilingual poster</span><span>Correction and closure update</span></div></div><div className={`social-preview ${status==='authorized'||status==='closed'?'ready':''}`}><div className="watermark">SIMULATED • NOT PUBLISHED</div><div className="social-head"><span className="social-logo">f</span><div><b>MUN Alert concept preview</b><small>Prepared by Ezassist • Training case</small></div><span>•••</span></div><div className="alert-visual"><Users/><span>NO REAL CHILD IMAGE</span></div><Badge tone="red">FICTIONAL MISSING-CHILD ALERT</Badge><h3>Help locate Demo Child A</h3><p>Training scenario near Mirpur, Dhaka. Do not act on this demonstration. In a real emergency, contact the authorized services named in the official alert.</p><div className="social-meta"><span>Bangla + English variants</span><span>Geo plan prepared</span></div><div className="preview-status">{status==='authorized'||status==='closed'?<><CheckCircle2/>Approved for simulated preview only</>:<><CircleDot/>Locked until simulated authorization</>}</div></div></section><section className="safety-grid"><div><span className="eyebrow">SAFETY BY WORKFLOW</span><h2>What this demo deliberately refuses to automate.</h2></div><div>{['No real child identity or photograph','No automatic case verification','No facial or identity conclusion','No automatic Facebook publication','No exact home address','No public confrontation instructions','No alert closure without authorization','No official partnership claim'].map(x=><span key={x}><X/>{x}</span>)}</div></section></div>}
+function SmeJourney() {
+  const [active, setActive] = useState(0)
+  const item = smeJourney[active]
+  const worker = getWorker(item.worker)
+  const Icon = workerIcons[item.worker]
+  return (
+    <section className="sme-journey">
+      <div className="sme-intro">
+        <span className="kicker">One small business, one connected team</span>
+        <h2>How seven workers help a neighborhood bakery grow</h2>
+        <p>Follow the customer journey from the first product page to repeat business and better decisions.</p>
+        <div className="sme-owner-note"><Users /><span><b>The business owner stays in control.</b> Workers prepare the work. The owner approves offers, messages, campaigns, and decisions.</span></div>
+      </div>
+      <div className="sme-story">
+        <div className="sme-path" aria-label="SME customer journey">
+          {smeJourney.map((stage, index) => {
+            const StageIcon = workerIcons[stage.worker]
+            return (
+              <button key={stage.worker} className={active === index ? 'active' : ''} onClick={() => setActive(index)}>
+                <span><StageIcon /></span>
+                <b>{stage.phase}</b>
+              </button>
+            )
+          })}
+        </div>
+        <div className="sme-stage" style={{ '--worker-color': worker.accent } as React.CSSProperties} aria-live="polite">
+          <div className="sme-stage-worker"><span><Icon /></span><div><small>Ezassist worker</small><b>{worker.name}</b></div></div>
+          <h3>{item.phase}</h3>
+          <p>{item.action}</p>
+          <div><Check /><span><small>Business result</small><b>{item.result}</b></span></div>
+          <nav aria-label="SME journey controls">
+            <button disabled={active === 0} onClick={() => setActive(index => index - 1)}>Previous</button>
+            <span>{active + 1} of {smeJourney.length}</span>
+            <button disabled={active === smeJourney.length - 1} onClick={() => setActive(index => index + 1)}>Next <ArrowRight /></button>
+          </nav>
+        </div>
+      </div>
+    </section>
+  )
+}
 
-function PitchView({go}:{go:(v:View)=>void}){return <div className="page pitch-page"><SectionTitle eyebrow="PROPOSAL FOR AI COLLECTIVE EVALUATION" title="Evaluate Ezassist as a solution-building layer for civic hackathons." copy="The proposition is not that one model can solve every problem. It is that specialized workers can be configured around the workflow, risk, and human responsibility of each solution." action={<Button onClick={()=>go('demos')}>View proof demos <ArrowRight/></Button>}/><section className="pitch-hero"><div><span className="eyebrow">THE THESIS</span><h2>Hackathon ideas become stronger when the work is divided, coordinated, and reviewable.</h2><p>Ezassist helps turn a problem statement into workflow artifacts: structured intake, case logic, interfaces, public information, outreach, follow-up, and pilot measurement.</p></div><div className="pitch-flow">{['Civic challenge','Configured workers','Reviewable artifacts','Human-approved action','Pilot evidence'].map((x,i)=><div key={x}><span>{i+1}</span><b>{x}</b>{i<4&&<ChevronRight/>}</div>)}</div></section><section className="proof-columns"><article><Badge tone="green">PROOF 01</Badge><Building2/><h3>Commercial expandability</h3><p>NagarSathi starts with waste-service coordination and shows a path toward multi-service, multi-organization civic operations.</p><Button kind="ghost" onClick={()=>go('nagar')}>Open NagarSathi <ArrowRight/></Button></article><article><Badge tone="red">PROOF 02</Badge><Flag/><h3>Humanitarian responsibility</h3><p>The MUN Alert concept changes the approval model for a high-stakes workflow and makes authority boundaries visible.</p><Button kind="ghost" onClick={()=>go('mun')}>Open MUN concept <ArrowRight/></Button></article></section><section className="evaluation"><div><span className="eyebrow">WHAT WE ARE ASKING</span><h2>A structured compatibility evaluation—not an unsupported partnership claim.</h2><p>We propose that AI Collective assess whether the Ezassist worker architecture can help hackathon teams design more complete, responsible, and measurable civic solutions.</p></div><div className="evaluation-grid">{[['Architecture fit','Can workers be configured around different civic workflows?'],['Artifact quality','Do outputs help teams move from idea to prototype?'],['Human control','Are consequential actions clearly governed?'],['Local relevance','Do voice, Bangla, and civic templates fit Bangladesh contexts?'],['Expansion path','Can promising concepts progress toward pilots?'],['Validation needs','What must be tested before production use?']].map(([a,b])=><div key={a}><Target/><span><b>{a}</b><small>{b}</small></span></div>)}</div></section><section className="boundaries"><ShieldCheck/><div><h3>Current proof versus future validation</h3><p><b>Built:</b> frontend workflows, seven-worker coordination, human approval states, bilingual content, reusable architecture.</p><p><b>Not yet validated:</b> real integrations, model performance, operational outcomes, adoption, safety in deployment, willingness to pay, or official partnerships.</p></div></section></div>}
+function WorkersView() {
+  const [selectedId, setSelectedId] = useState<WorkerId>('voice')
+  const selected = getWorker(selectedId)
+  return (
+    <div className="page workers-page">
+      <header className="page-heading">
+        <span className="kicker">Ezassist AI workforce</span>
+        <h1>Start with one small business story.</h1>
+        <p>See the complete customer journey first, then explore what each worker contributes.</p>
+      </header>
+      <SmeJourney />
+      <header className="worker-explorer-heading">
+        <h2>Explore each worker</h2>
+        <p>Select a role to see what it receives, does, produces, and leaves for a person to decide.</p>
+      </header>
+      <div className="worker-browser">
+        <div className="worker-selector" role="list" aria-label="AI workers">
+          {workers.map(worker => {
+            const Icon = workerIcons[worker.id]
+            return (
+              <button
+                key={worker.id}
+                className={selectedId === worker.id ? 'active' : ''}
+                onClick={() => setSelectedId(worker.id)}
+                style={{ '--worker-color': worker.accent } as React.CSSProperties}
+              >
+                <span><Icon /></span>
+                <div><b>{worker.name}</b><small>{worker.output}</small></div>
+                <ChevronRight />
+              </button>
+            )
+          })}
+        </div>
+        <WorkerDetails worker={selected} />
+      </div>
+      <aside className="prototype-note"><CircleHelp /><p><b>What this prototype proves:</b> the role of each worker and how its output fits into a solution. It does not run production AI or external integrations.</p></aside>
+    </div>
+  )
+}
 
-export default function ProductApp(){const [view,setView]=useState<View>('overview'),[returnView,setReturnView]=useState<View>('demos');const go=(next:View)=>{if(next==='nagar'||next==='mun')setReturnView(view);setView(next);window.scrollTo({top:0,behavior:'smooth'})};const content=useMemo(()=>{switch(view){case'overview':return <Overview go={go}/>;case'workers':return <WorkersView/>;case'demos':return <DemosView go={go}/>;case'nagar':return <NagarOperationsDemo back={()=>go(returnView)}/>;case'mun':return <MunOperationsDemo back={()=>go(returnView)}/>;case'pitch':return <PitchView go={go}/>}},[view,returnView]);return <Shell view={view} go={go}>{content}</Shell>}
+function DemosView({ go }: { go: (view: View) => void }) {
+  return (
+    <div className="page demos-page">
+      <header className="page-heading">
+        <span className="kicker">Guided solution prototypes</span>
+        <h1>Choose a problem. Follow the workers.</h1>
+        <p>Each demo explains what enters, which worker acts, what comes out, and where a person decides.</p>
+      </header>
+      <div className="demo-choices">
+        {demoProjects.map((project, index) => (
+          <article key={project.id}>
+            <div className="demo-choice-top">
+              <span>{index === 0 ? <Leaf /> : <CloudRain />}</span>
+              <small>{project.track}</small>
+            </div>
+            <h2>{project.name}</h2>
+            <p>{project.problem}</p>
+            <dl>
+              <div><dt>Designed for</dt><dd>{project.audience}</dd></div>
+              <div><dt>Prototype result</dt><dd>{project.result}</dd></div>
+              <div><dt>Workers used</dt><dd>{project.workers.length} of 7</dd></div>
+            </dl>
+            <div className="worker-row">{project.workers.map(id => <WorkerMark key={id} id={id} />)}</div>
+            <button className="primary-button" onClick={() => go(project.id)}>Start {project.name} demo <ArrowRight /></button>
+          </article>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function HackathonFit({ go }: { go: (view: View) => void }) {
+  return (
+    <div className="page fit-page">
+      <header className="page-heading">
+        <span className="kicker">Hack for Humanity Bangladesh 2026</span>
+        <h1>From hackathon idea to understandable prototype.</h1>
+        <p>Ezassist demonstrates how specialized workers can support teams across the solution lifecycle while people retain control.</p>
+      </header>
+      <section className="fit-statement">
+        <Rocket />
+        <div><h2>Technology partner showcase</h2><p>This prototype introduces the Ezassist workforce and demonstrates how workers can be configured around civic and environmental challenges.</p></div>
+      </section>
+      <section className="fit-grid">
+        <article><Leaf /><h3>Environmental sustainability</h3><p>Waste reporting, public education, adoption campaigns, and outcome measurement.</p></article>
+        <article><Users /><h3>Rural development</h3><p>Voice-first intake, service routing, farmer information, and follow-up.</p></article>
+        <article><Home /><h3>Smart public services</h3><p>Citizen requests, case triage, status communication, and accountable closure.</p></article>
+        <article className="fit-action"><Target /><h3>What teams should notice</h3><p>A complete solution needs more than one model response. It needs roles, handoffs, review, communication, and learning.</p><button onClick={() => go('demos')}>See the orchestration <ArrowRight /></button></article>
+      </section>
+      <section className="scope-box">
+        <ShieldCheck />
+        <div><h2>Prototype boundary</h2><p>All cases, outputs, metrics, and actions are simulated. No message is sent, no authority is contacted, and no production integration runs from this experience.</p></div>
+      </section>
+    </div>
+  )
+}
+
+export default function ProductApp() {
+  const validViews: View[] = ['overview', 'workers', 'matcher', 'demos', 'fit', 'nagar', 'flood']
+  const initialHash = window.location.hash.replace('#', '') as View
+  const [view, setView] = useState<View>(validViews.includes(initialHash) ? initialHash : 'overview')
+  const go = (next: View) => {
+    setView(next)
+    window.history.replaceState(null, '', `#${next}`)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+  return (
+    <div className="app-shell">
+      <AppHeader view={view} go={go} />
+      <main>
+        {view === 'overview' && <Overview go={go} />}
+        {view === 'workers' && <WorkersView />}
+        {view === 'matcher' && <IdeaMatcher openDemo={demo => go(demo)} />}
+        {view === 'demos' && <DemosView go={go} />}
+        {view === 'fit' && <HackathonFit go={go} />}
+        {(view === 'nagar' || view === 'flood') && <GuidedDemo projectId={view} back={() => go('demos')} />}
+      </main>
+      <footer className="site-footer"><span>Ezassist AI Workforce</span><span>Interactive prototype with simulated data and actions</span></footer>
+    </div>
+  )
+}

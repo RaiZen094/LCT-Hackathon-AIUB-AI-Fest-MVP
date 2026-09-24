@@ -1,166 +1,117 @@
-# Ezassist Civic MVP Workflow
+# Ezassist Prototype Workflow
 
-## Objective
+## Product objective
 
-Demonstrate to AI Collective that seven Ezassist workers can be configured around different civic hackathon problems while preserving specialization, visible coordination, human accountability, and a credible path beyond the hackathon.
+Help a first-time visitor answer two questions quickly:
 
-The project is not a participant portal, generic enterprise dashboard, or claim of production deployment.
+1. What does each Ezassist AI worker do for a business or service team?
+2. How can selected workers combine inside a solution for a real problem?
 
-## Product narrative
+The experience is an interactive prototype. It does not demonstrate production AI execution.
 
-```text
-Civic challenge
-→ Configure specialized workers
-→ Produce reviewable solution artifacts
-→ Apply risk-appropriate human controls
-→ Demonstrate the workflow
-→ Define pilot evidence and expansion path
-```
-
-## Navigation
+## Information architecture
 
 ```text
 Overview
 AI Workers
-Civic Demos
-For AI Collective
+Solution Demos
+Hackathon Fit
 ```
 
-NagarSathi and the MUN concept open from Civic Demos. The application remembers the originating view for the back action.
+The overview provides the mental model. The worker browser explains individual roles. The guided demos show orchestration. Hackathon Fit connects the concept to the event tracks.
 
-## Embedded assistance pattern
+## SME introduction flow
 
-The demos present the finished project UI first. Ezassist appears at defined intervention points:
+The worker area first shows one complete small-business journey. A fictional neighborhood bakery uses all seven workers to create an order page, explain products, reach local customers, capture inquiries, handle requests, follow up, and learn from results.
+
+The visitor can move backward and forward through the story. Each stage shows one worker action and one business result.
+
+## Worker explanation model
+
+Every worker uses the same five-part explanation:
 
 ```text
-User or operator performs normal work
-→ Relevant worker prepares a contextual output
-→ Interface identifies the worker and its reasoning boundary
-→ Human reviews or edits the output
-→ Human or authority performs the consequential action
+Business need
+Receives
+Does
+Produces
+Human checkpoint
 ```
 
-Inactive workers remain visible so evaluators can see that worker selection is based on the current workflow rather than a forced seven-agent sequence.
+This keeps the content comparable and avoids capability lists without business context.
 
-## NagarSathi operations workflow
+## Guided demo model
 
-Initial state:
+Each project is divided into a short beginner-friendly story. A story section contains:
 
 ```text
-selected issue = first simulated queue item
-triaged = false
-approved = false
-assistance panel = open
+The situation
+Worker helping now
+How Ezassist helps
+Simulated example
+Why it is useful
+What a person still decides
 ```
 
-Run behavior:
+The visitor reviews each moment and continues to the next worker. Completing the flow shows a local success state. No external action occurs.
 
-1. Voice assistance is already visible in the structured resident report.
-2. Customer Service proposes category, priority, and ownership.
-3. The operator applies or rejects the triage recommendation.
-4. Growth surfaces a simulated pattern for human validation.
-5. Customer Success prepares a resident response.
-6. The operator edits or approves the response.
-7. No response or assignment leaves the local demo.
-
-### NagarSathi artifacts
-
-| Worker | Artifact |
-| --- | --- |
-| Voice | Bilingual intake record |
-| Customer Service | Classified and prioritized case |
-| Landing Page | Resident and operator interface specification |
-| Customer Success | Resolution and follow-up journey |
-| Growth | Pilot measurement plan |
-| Content | Optional bilingual content system |
-| Campaign | Optional neighborhood adoption plan |
-
-## MUN concept operations workflow
-
-Its relevant workers are Voice, Customer Service, Content, Digital Campaign, and Customer Success. Landing Page and Growth are shown as inactive for the core case workflow.
+## NagarSathi flow
 
 ```text
-Fictional report review
-→ Human completes required verification checklist
-→ Customer Service flags missing authority reference
-→ Human sends complete case to simulated authority review
-→ Authorized human approves or returns the package
-→ Content and Campaign previews become available
-→ Authorized human closes the training case
+Bangla voice report
+-> Voice Executive prepares a structured case
+-> Customer Service Executive recommends priority and ownership
+-> Growth Analyst surfaces a pattern for validation
+-> Customer Success Executive prepares the resident update
+-> Operator controls every consequential action
 ```
 
-### Humanitarian artifacts
+## FloodReady flow
 
-| Worker | Artifact |
-| --- | --- |
-| Voice | Unconfirmed structured transcript |
-| Customer Service | Required-field and inconsistency checklist |
-| Content | Authority-review bilingual alert package |
-| Campaign | Geographic social distribution concept |
-| Customer Success | Family, authority, correction, and closure checklist |
-| Landing Page | Optional privacy-aware case and tip-form specification |
-| Growth | Optional humanitarian evaluation plan |
+```text
+Local flood observation
+-> Voice Executive prepares a situation report
+-> Customer Service Executive separates facts from gaps
+-> Content Executive drafts a bilingual update
+-> Digital Campaign Executive prepares an outreach sequence
+-> Customer Success Executive prepares follow-up and closure
+-> Responsible people verify, publish, correct, and close
+```
 
-### Required safeguards
+## Prototype safeguards
 
-- Fictional training identifier only
-- No real photograph or exact address
-- Visible unofficial and unpublished labels
-- No automatic verification or identity conclusion
-- No automatic distribution
-- Authority authorization represented in the control-workflow artifact
-- No generated artifact is described as an executed alert
-
-## AI Collective evaluation
-
-The proposal asks AI Collective to assess:
-
-1. Architecture fit across civic workflows
-2. Artifact quality from idea to prototype
-3. Human control of consequential actions
-4. Local relevance of Bangla, voice, and civic templates
-5. Expansion from hackathon concept to pilot
-6. Evidence still required before production
-
-The application does not claim that an evaluation or partnership has occurred.
+- Use fictional scenarios and generalized locations.
+- Label outputs as simulated.
+- Do not imply that an AI worker verified a real-world event.
+- Keep publication, assignment, escalation, and closure under human control.
+- Do not claim production integrations or measured outcomes.
 
 ## Manual verification
 
-```text
-Overview CTAs
-Worker search and seven worker modals
-Civic-demo comparison
-NagarSathi queue selection, triage application, insight, response approval, reset
-MUN checklist, blocked escalation, authority review, correction, authorization, closure, reset
-Different default worker selections across both cases
-Back navigation
-Responsive navigation drawer
-Bangla rendering
-Reduced-motion behavior
-```
-
-Required build check:
-
-```bash
-npm run build
-```
+- All four top navigation items open correctly.
+- Mobile navigation opens and closes.
+- Every worker selector changes the detail panel.
+- Worker content includes receives, does, produces, and human checkpoint.
+- Both guided demos allow direct moment selection.
+- Review and continue advances through the workflow.
+- Run again returns the demo to its initial state.
+- Text remains readable at common projector resolution.
+- Bangla text renders correctly.
+- Focus indicators are visible for keyboard users.
+- Reduced-motion settings disable nonessential motion.
+- `npm run build` completes successfully.
 
 ## Production migration
 
-Shared foundations include typed APIs, authentication, tenancy, permissions, durable workflow runs, audit events, human task queues, and model evaluation.
+A production version would require authenticated users, role-based permissions, durable workflow records, audit events, data minimization, encryption, model evaluation, error recovery, partner-approved policies, and monitored integrations.
+# Participant matching flow
 
-A NagarSathi pilot should use one consenting organization, one bounded service zone, real operators, minimized resident data, and defined baselines.
+The Build Your Team page uses predefined solution recipes so the prototype remains predictable and honest. A participant:
 
-No humanitarian implementation should begin without an authorized partner, safeguarding and privacy review, official verification policy, incident response, and explicit channel agreements.
+1. Chooses the closest problem pattern.
+2. Customizes the solution name and problem statement.
+3. Reviews the recommended core worker handoff.
+4. Adds optional workers only when useful.
+5. Prints or saves a one-page solution map.
 
-## Definition of done
-
-An evaluator should be able to explain:
-
-- Why seven specialists are more useful than one generic chatbot
-- What every worker produces
-- How NagarSathi can expand commercially
-- Why humanitarian workflows require stricter control
-- Which evidence exists today
-- Which claims require a pilot
-- What AI Collective is being asked to evaluate
+The matcher does not call an AI model. Recipe changes reset optional workers and move the detail view to the first core worker.

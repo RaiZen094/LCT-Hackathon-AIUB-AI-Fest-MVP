@@ -1,40 +1,191 @@
 import { useState } from 'react'
 import {
-  AlertTriangle, ArrowLeft, BarChart3, Bell, Building2, Check, CheckCircle2, ChevronDown,
-  ChevronRight, CircleDot, Clock3, FileCheck2, Flag, Headphones, Inbox, LayoutDashboard,
-  ListFilter, Map, MapPin, Megaphone, MessageSquareText, Mic2, MoreHorizontal, PenLine,
-  RefreshCcw, Search, Send, ShieldCheck, Sparkles, TrendingUp, UserCheck, Users, X, Zap,
+  ArrowLeft, ArrowRight, Check, CheckCircle2, CloudRain,
+  Headphones, Leaf, LayoutTemplate, Megaphone, Mic2, PenLine, RefreshCcw,
+  ShieldCheck, TrendingUp, UserCheck,
 } from 'lucide-react'
-import { getWorker, type WorkerId } from './productData'
+import { getProject, getWorker, type DemoProject, type WorkerId } from './productData'
 
-function AgentBadge({id,label}:{id:WorkerId;label?:string}){const worker=getWorker(id);const icons:Record<WorkerId,typeof Mic2>={voice:Mic2,service:Headphones,growth:TrendingUp,success:UserCheck,content:PenLine,campaign:Megaphone,landing:LayoutDashboard};const Icon=icons[id];return <span className="op-agent" style={{'--agent':worker.accent} as React.CSSProperties}><Icon/>{label??worker.name}</span>}
-function DemoNav({brand,kind}:{brand:string;kind:'nagar'|'mun'}){return <aside className="product-sidebar"><div className="product-brand"><span>{kind==='nagar'?<Building2/>:<Flag/>}</span><div><b>{brand}</b><small>{kind==='nagar'?'CIVIC OPERATIONS':'RESPONSE CONSOLE'}</small></div></div><nav>{(kind==='nagar'?[[LayoutDashboard,'Overview'],[Inbox,'Issue queue'],[Map,'Service zones'],[Users,'Residents'],[BarChart3,'Insights']]:[[LayoutDashboard,'Dashboard'],[Flag,'Cases'],[FileCheck2,'Alert builder'],[MessageSquareText,'Tip inbox'],[ShieldCheck,'Verification']]).map(([Icon,label],i)=><button className={i===1?'active':''} key={label as string}><Icon/>{label as string}{i===1&&<span>{kind==='nagar'?12:3}</span>}</button>)}</nav><div className="product-side-bottom"><ShieldCheck/><span><b>Human-controlled</b><small>AI prepares. People decide.</small></span></div></aside>}
-function ProductTop({title,kind}:{title:string;kind:'nagar'|'mun'}){return <header className="product-top"><div><small>{kind==='nagar'?'MIRPUR • ZONE 04':'FICTIONAL TRAINING ENVIRONMENT'}</small><b>{title}</b></div><div className="product-search"><Search/><span>Search {kind==='nagar'?'issues':'training cases'}…</span></div><button><Bell/></button><span className="operator-avatar">{kind==='nagar'?'RA':'AU'}</span></header>}
-
-const issues=[
-  {id:'NS-1042',title:'Missed waste collection',area:'Mirpur 10 • Lane 4',time:'12 min ago',priority:'Medium-high',status:'Needs review'},
-  {id:'NS-1041',title:'Overflowing community bin',area:'Mirpur 11 • Block C',time:'28 min ago',priority:'High',status:'Assigned'},
-  {id:'NS-1040',title:'Collection schedule question',area:'Pallabi • Block B',time:'45 min ago',priority:'Low',status:'Response ready'},
-  {id:'NS-1039',title:'Waste left after collection',area:'Mirpur 12 • Road 7',time:'1h ago',priority:'Medium',status:'In progress'},
-]
-
-export function NagarOperationsDemo({back}:{back:()=>void}){
-  const [selected,setSelected]=useState(0),[triaged,setTriaged]=useState(false),[approved,setApproved]=useState(false),[agentOpen,setAgentOpen]=useState(true)
-  const issue=issues[selected]
-  const reset=()=>{setSelected(0);setTriaged(false);setApproved(false);setAgentOpen(true)}
-  return <div className="page operational-page"><button className="back-link" onClick={back}><ArrowLeft/>Civic demos</button><div className="demo-context"><div><span>NAGARSATHI • COMMERCIAL CIVIC DEMO</span><h1>See the product. See where Ezassist steps in.</h1><p>The operator works in a normal service dashboard. Relevant workers assist at intake, triage, follow-up, and measurement—without taking control away from the coordinator.</p></div><div className="active-team"><small>ACTIVE FOR THIS WORKFLOW</small><div><AgentBadge id="voice"/><AgentBadge id="service"/><AgentBadge id="success"/><AgentBadge id="growth"/></div><span>4 of 7 workers selected</span></div></div>
-    <section className="product-frame"><DemoNav brand="NagarSathi" kind="nagar"/><div className="product-main"><ProductTop title="Issue queue" kind="nagar"/><div className="metrics-row">{[['Open issues','12','+3 today'],['Awaiting review','4','Needs action'],['Assigned','6','2 overdue'],['Median response','2h 18m','Demo metric']].map(([a,b,c],i)=><div key={a}><span className={`metric-symbol s${i}`}><CircleDot/></span><div><small>{a}</small><b>{b}</b><span>{c}</span></div></div>)}</div><div className="ops-workspace"><section className="issue-list"><div className="list-toolbar"><div><h2>Resident issues</h2><span>Simulated service queue</span></div><button><ListFilter/>Filter</button></div>{issues.map((item,i)=><button key={item.id} className={selected===i?'selected':''} onClick={()=>{setSelected(i);setTriaged(i>0);setApproved(false)}}><div><span className={`priority-dot ${item.priority.toLowerCase().replace('-','')}`}/><small>{item.id}</small><span>{item.time}</span></div><b>{item.title}</b><p><MapPin/>{item.area}</p><div><span className="queue-status">{item.status}</span><span className="queue-priority">{item.priority}</span></div></button>)}</section><section className="case-workspace"><div className="case-header"><div><small>{issue.id} • RESIDENT SERVICE ISSUE</small><h2>{issue.title}</h2><p><MapPin/>{issue.area}<span>•</span><Clock3/>{issue.time}</p></div><button><MoreHorizontal/></button></div><div className="case-statusbar"><span><small>STATUS</small><b>{approved?'Response approved':triaged?'Ready to assign':'Needs review'}</b></span><span><small>PRIORITY</small><b>{triaged?'Medium-high':'Unclassified'}</b></span><span><small>OWNER</small><b>{triaged?'Zone coordinator':'Unassigned'}</b></span><span><small>SLA</small><b>{triaged?'Review in 2h':'Not set'}</b></span></div><div className="resident-message"><div className="message-avatar"><Mic2/></div><div><small>VOICE REPORT • BANGLA → OPERATOR ENGLISH</small><blockquote>“Waste has not been collected from our lane for three days. The bin is overflowing and residents are worried about the smell.”</blockquote><span><CheckCircle2/>Transcript confirmed in this simulation</span></div><AgentBadge id="voice" label="Voice assisted"/></div><div className="case-tabs"><button className="active">Activity</button><button>Resident details</button><button>Service history</button></div><div className="case-activity"><div><span className="activity-icon"><Mic2/></span><div><b>Voice report structured</b><p>Language, general location, issue description, and consent were separated into a case record.</p><small>12 minutes ago</small></div><AgentBadge id="voice"/></div>{triaged&&<div><span className="activity-icon cyan"><Headphones/></span><div><b>Triage recommendation applied</b><p>Category: missed collection • Priority: medium-high • Suggested owner: Zone 04 coordinator.</p><small>Just now • Operator applied</small></div><AgentBadge id="service"/></div>}{approved&&<div><span className="activity-icon green"><Send/></span><div><b>Resident response approved</b><p>Follow-up is scheduled after coordinator confirmation. Nothing was sent outside this demo.</p><small>Just now • Operator approved</small></div><AgentBadge id="success"/></div>}</div></section><aside className={`assist-rail ${agentOpen?'open':''}`}><button className="assist-toggle" onClick={()=>setAgentOpen(v=>!v)}><Sparkles/><span>Ezassist</span><ChevronDown/></button>{agentOpen&&<div className="assist-body"><div className="assist-head"><div><span className="assist-pulse"/><b>Contextual assistance</b></div><small>Only relevant workers are active</small></div>{!triaged?<div className="assist-card focus"><AgentBadge id="service"/><h3>Suggested triage</h3><div className="assist-fields"><span><small>CATEGORY</small><b>Missed collection</b></span><span><small>PRIORITY</small><b>Medium-high</b></span><span><small>OWNER</small><b>Zone 04 coordinator</b></span><span><small>CONFIDENCE</small><b>Review advised</b></span></div><p>Reason: three-day delay, overflow, and potential neighborhood health concern.</p><button onClick={()=>setTriaged(true)}><Check/>Apply triage</button><small className="control-copy"><ShieldCheck/>Operator can edit every field.</small></div>:!approved?<><div className="assist-card"><AgentBadge id="growth"/><h3>Related pattern</h3><p>Three simulated missed-collection reports appear in Zone 04 this week. Validate against real service records before acting.</p><span className="insight-link">View prototype insight <ChevronRight/></span></div><div className="assist-card focus"><AgentBadge id="success"/><h3>Resident response</h3><div className="draft-response">Thank you for reporting this issue. Your report is ready for coordinator review. We will update the status after the pickup schedule is confirmed.</div><div className="assist-actions"><button className="edit"><PenLine/>Edit</button><button onClick={()=>setApproved(true)}><Check/>Approve</button></div><small className="control-copy"><ShieldCheck/>Prepared, not automatically sent.</small></div></>:<div className="assist-card complete-card"><CheckCircle2/><h3>Human review complete</h3><p>The AI-assisted triage and response were approved by the demo operator.</p><button onClick={reset}><RefreshCcw/>Reset scenario</button></div>}<div className="inactive-workers"><small>NOT NEEDED FOR THIS CASE</small><div><AgentBadge id="content"/><AgentBadge id="campaign"/><AgentBadge id="landing"/></div><p>Available for education, adoption campaigns, or interface changes—not invoked for routine case resolution.</p></div></div>}</aside></div></div></section>
-    <section className="intervention-map"><div><span>HOW EZASSIST FITS</span><h2>Assistance appears inside the work—not beside it.</h2></div>{[['1','Voice intake','Structures the resident report','Voice Executive'],['2','Case review','Recommends category, priority, and owner','Customer Service'],['3','Pattern awareness','Surfaces a trend for operator validation','Growth Analyst'],['4','Resident follow-up','Drafts the response and follow-up','Customer Success']].map(([n,a,b,c])=><article key={n}><span>{n}</span><div><small>{a}</small><b>{b}</b><p>{c}</p></div></article>)}</section>
-  </div>
+const icons: Record<WorkerId, typeof Mic2> = {
+  voice: Mic2,
+  service: Headphones,
+  growth: TrendingUp,
+  success: UserCheck,
+  content: PenLine,
+  campaign: Megaphone,
+  landing: LayoutTemplate,
 }
 
-const checklist=['Reporter confirmation recorded','Required descriptive fields complete','General last-seen area reviewed','Authority report reference attached','Sensitive fields removed from public copy']
-export function MunOperationsDemo({back}:{back:()=>void}){
-  const [checks,setChecks]=useState<boolean[]>([true,true,true,false,true]),[status,setStatus]=useState<'review'|'authority'|'authorized'|'closed'>('review'),[tab,setTab]=useState<'case'|'alert'>('case')
-  const allChecks=checks.every(Boolean)
-  const reset=()=>{setChecks([true,true,true,false,true]);setStatus('review');setTab('case')}
-  return <div className="page operational-page"><button className="back-link" onClick={back}><ArrowLeft/>Civic demos</button><div className="demo-context mun-context"><div><span>MUN ALERT • UNOFFICIAL COMPATIBILITY CONCEPT</span><h1>A humanitarian console with authority—not AI—at the center.</h1><p>Relevant workers help structure information, prepare verified-field content, plan public reach, and manage follow-up. They cannot verify or publish an alert.</p></div><div className="active-team"><small>ACTIVE FOR THIS WORKFLOW</small><div><AgentBadge id="voice"/><AgentBadge id="service"/><AgentBadge id="content"/><AgentBadge id="campaign"/><AgentBadge id="success"/></div><span>5 of 7 workers selected</span></div></div><div className="mun-warning"><AlertTriangle/><div><b>Fictional training case—no real child, report, or emergency.</b><p>This interface does not connect to MUN Alert, Meta, police, or any external service.</p></div><span>TRAINING ONLY</span></div>
-    <section className="product-frame mun-product"><DemoNav brand="MUN Alert Concept" kind="mun"/><div className="product-main"><ProductTop title="Case workspace" kind="mun"/><div className="emergency-strip"><ShieldCheck/><div><small>AUTHORITY BOUNDARY</small><b>AI may prepare materials. Only an authorized human can verify, distribute, correct, or close an alert.</b></div><span className={`case-state ${status}`}>{status==='review'?'Internal review':status==='authority'?'Authority review':status==='authorized'?'Simulated authorization':'Training case closed'}</span></div><div className="mun-workspace"><section className="mun-case"><div className="case-header"><div><small>TRAINING-MUN-001 • FICTIONAL CASE</small><h2>Demo Child A</h2><p><MapPin/>General area: Mirpur, Dhaka<span>•</span><Clock3/>Simulated report time</p></div><span className="training-chip">NO REAL IDENTITY</span></div><div className="mun-tabs"><button className={tab==='case'?'active':''} onClick={()=>setTab('case')}>Case review</button><button className={tab==='alert'?'active':''} onClick={()=>setTab('alert')}>Alert package</button></div>{tab==='case'?<div className="mun-case-body"><div className="identity-placeholder"><Users/><b>No real child photograph</b><span>Neutral placeholder used for safeguarding</span></div><div className="case-data"><div><small>AGE RANGE</small><b>School-age child</b></div><div><small>GENERAL AREA</small><b>Mirpur, Dhaka</b></div><div><small>CLOTHING</small><b>Blue shirt • fictional detail</b></div><div><small>REPORT SOURCE</small><b>Simulated voice call</b></div><div className="wide"><small>UNCONFIRMED REPORT SUMMARY</small><p>A fictional caller reports that Demo Child A was last seen in a public area. All information remains unverified until reviewed by an authorized authority.</p></div></div><div className="voice-assist-line"><AgentBadge id="voice"/><span><b>Voice Executive structured the draft</b><small>Separated reported facts, uncertainty, and missing confirmation fields.</small></span><CheckCircle2/></div></div>:<div className="alert-package"><div className="alert-copy"><div><AgentBadge id="content"/><span><b>Bilingual alert draft</b><small>Uses approved-field placeholders only</small></span></div><h3>Fictional training alert: Demo Child A</h3><p><b>English:</b> This is a training scenario. No real child is missing. In a real official alert, follow the verified authority contact instructions.</p><p className="bangla"><b>বাংলা:</b> এটি একটি প্রশিক্ষণমূলক দৃশ্য। কোনো বাস্তব শিশু নিখোঁজ নয়। বাস্তব সরকারি সতর্কতার ক্ষেত্রে যাচাইকৃত কর্তৃপক্ষের নির্দেশনা অনুসরণ করুন।</p></div><div className="social-package"><div><span className="fake-f">f</span><div><b>Facebook reach concept</b><small>SIMULATED • NOT CONNECTED</small></div><AgentBadge id="campaign"/></div><div className="fake-post"><Flag/><b>TRAINING ALERT PREVIEW</b><span>No real child image</span></div><p>Prepared formats: feed card, Messenger notice, story layout, correction, and closure update.</p><span className={`publish-lock ${status==='authorized'?'ready':''}`}><ShieldCheck/>{status==='authorized'?'Available for authorized simulation':'Locked pending authority authorization'}</span></div></div>}</section><aside className="mun-control"><div className="control-header"><ShieldCheck/><div><b>Verification control</b><small>Human decisions are recorded explicitly</small></div></div><div className="checklist">{checklist.map((item,i)=><button key={item} className={checks[i]?'checked':''} onClick={()=>status==='review'&&setChecks(values=>values.map((v,x)=>x===i?!v:v))} disabled={status!=='review'}><span>{checks[i]?<Check/>:i+1}</span><div><b>{item}</b><small>{checks[i]?'Confirmed in simulation':'Required before escalation'}</small></div></button>)}</div>{status==='review'&&<div className="control-action"><AgentBadge id="service"/><p>Customer Service Executive found one unresolved verification requirement. AI cannot complete it.</p><button onClick={()=>setStatus('authority')} disabled={!allChecks}><UserCheck/>Send to authority review</button></div>}{status==='authority'&&<div className="authority-box"><AlertTriangle/><h3>Simulated authority decision</h3><p>An authorized human—not an AI worker—must confirm that the alert package may proceed.</p><button onClick={()=>{setStatus('authorized');setTab('alert')}}><ShieldCheck/>Authorize preview simulation</button><button className="reject" onClick={()=>setStatus('review')}><X/>Return for correction</button></div>}{status==='authorized'&&<><div className="control-action success"><CheckCircle2/><p>The alert package is authorized for this local preview only. Nothing was published.</p><button onClick={()=>setStatus('closed')}><Check/>Close training case</button></div><div className="followup-card"><AgentBadge id="success"/><div><b>Closure workflow prepared</b><p>Family update, correction notice, channel withdrawal, and audit checklist.</p></div></div></>}{status==='closed'&&<div className="control-action success"><CheckCircle2/><p>Training case closed. Closure actions remain simulated.</p><button onClick={reset}><RefreshCcw/>Reset scenario</button></div>}<div className="inactive-workers"><small>NOT NEEDED IN THE CORE FLOW</small><div><AgentBadge id="landing"/><AgentBadge id="growth"/></div><p>Optional for a public case portal or program evaluation—not required to prepare this alert package.</p></div></aside></div></div></section>
-    <section className="intervention-map mun-map"><div><span>WHERE EZASSIST STEPS IN</span><h2>AI accelerates preparation. Authority owns the outcome.</h2></div>{[['1','Report intake','Structures an explicitly unconfirmed draft','Voice Executive'],['2','Verification support','Finds missing fields and inconsistencies','Customer Service'],['3','Alert preparation','Drafts factual bilingual material','Content Executive'],['4','Public reach','Prepares controlled channel formats','Campaign Executive'],['5','Follow-up','Prepares correction and closure workflow','Customer Success']].map(([n,a,b,c])=><article key={n}><span>{n}</span><div><small>{a}</small><b>{b}</b><p>{c}</p></div></article>)}</section>
-  </div>
+function StepPreview({ projectId, stepId }: { projectId: DemoProject['id']; stepId: string }) {
+  if (projectId === 'nagar') {
+    if (stepId === 'intake') return (
+      <div className="artifact-preview intake-preview">
+        <span className="preview-label">Structured case</span>
+        <blockquote>“আমাদের গলিতে তিন দিন ধরে ময়লা নেওয়া হয়নি।”</blockquote>
+        <div className="field-grid">
+          <span><small>Issue</small><b>Missed collection</b></span>
+          <span><small>Area</small><b>Mirpur 10</b></span>
+          <span><small>Delay</small><b>Three days</b></span>
+          <span><small>Concern</small><b>Overflowing bin</b></span>
+        </div>
+      </div>
+    )
+    if (stepId === 'triage') return (
+      <div className="artifact-preview recommendation-preview">
+        <span className="preview-label">Triage recommendation</span>
+        <div className="recommendation-line"><span>Category</span><b>Missed collection</b></div>
+        <div className="recommendation-line"><span>Priority</span><b>Medium-high</b></div>
+        <div className="recommendation-line"><span>Owner</span><b>Zone 04 coordinator</b></div>
+        <div className="recommendation-line"><span>Response target</span><b>Review within two hours</b></div>
+      </div>
+    )
+    if (stepId === 'insight') return (
+      <div className="artifact-preview insight-preview">
+        <span className="preview-label">Pattern to validate</span>
+        <strong>3 similar reports</strong>
+        <p>Simulated missed-collection reports from Zone 04 this week.</p>
+        <div className="mini-bars"><span /><span /><span /><span /></div>
+        <small>Check against real service records before acting.</small>
+      </div>
+    )
+    return (
+      <div className="artifact-preview message-preview">
+        <span className="preview-label">Draft resident update</span>
+        <p>Thank you for reporting this issue. Your case is ready for coordinator review. We will update you after the collection schedule is confirmed.</p>
+        <p className="bangla">সমস্যাটি জানানোর জন্য ধন্যবাদ। সংগ্রহের সময়সূচি নিশ্চিত হওয়ার পর আমরা আপনাকে জানাব।</p>
+      </div>
+    )
+  }
+
+  if (stepId === 'report') return (
+    <div className="artifact-preview intake-preview">
+      <span className="preview-label">Community situation report</span>
+      <div className="field-grid">
+        <span><small>Area</small><b>Fictional school road</b></span>
+        <span><small>District</small><b>Kurigram</b></span>
+        <span><small>Condition</small><b>Water reported rising</b></span>
+        <span><small>Confidence</small><b>Caller report only</b></span>
+      </div>
+    </div>
+  )
+  if (stepId === 'check') return (
+    <div className="artifact-preview checklist-preview">
+      <span className="preview-label">Facts and gaps</span>
+      <p><Check /> Caller and general area recorded</p>
+      <p><Check /> Report time recorded</p>
+      <p className="pending">Local road access still needs confirmation</p>
+      <p className="pending">Response level must be set by the coordinator</p>
+    </div>
+  )
+  if (stepId === 'message') return (
+    <div className="artifact-preview message-preview">
+      <span className="preview-label">Bilingual update draft</span>
+      <p><b>English:</b> Water has been reported near a fictional school road. Local verification is in progress. Follow approved local safety guidance.</p>
+      <p className="bangla"><b>বাংলা:</b> একটি কাল্পনিক স্কুল সড়কের কাছে পানি বৃদ্ধির খবর পাওয়া গেছে। স্থানীয় যাচাই চলছে।</p>
+    </div>
+  )
+  if (stepId === 'reach') return (
+    <div className="artifact-preview channel-preview">
+      <span className="preview-label">Outreach sequence</span>
+      {['Community groups', 'SMS update', 'Social channels', 'Correction if needed', 'Closure notice'].map((item, index) => <div key={item}><span>{index + 1}</span><b>{item}</b></div>)}
+    </div>
+  )
+  return (
+    <div className="artifact-preview checklist-preview">
+      <span className="preview-label">Follow-up checklist</span>
+      <p><Check /> Confirm field-team update</p>
+      <p><Check /> Record what changed</p>
+      <p><Check /> Prepare correction if required</p>
+      <p><Check /> Close only after lead confirmation</p>
+    </div>
+  )
+}
+
+export function GuidedDemo({ projectId, back }: { projectId: DemoProject['id']; back: () => void }) {
+  const project = getProject(projectId)
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [finished, setFinished] = useState(false)
+  const step = project.steps[activeIndex]
+  const worker = getWorker(step.worker)
+  const Icon = icons[step.worker]
+  const next = () => {
+    if (activeIndex === project.steps.length - 1) setFinished(true)
+    else setActiveIndex(index => index + 1)
+  }
+  const reset = () => { setActiveIndex(0); setFinished(false) }
+
+  return (
+    <div className="page guided-demo-page">
+      <button className="back-button" onClick={back}><ArrowLeft /> Solution demos</button>
+      <header className="demo-heading">
+        <div className="demo-heading-icon">{projectId === 'nagar' ? <Leaf /> : <CloudRain />}</div>
+        <div><small>{project.track}</small><h1>{project.name}</h1><p>{project.problem}</p></div>
+        <span>Beginner-friendly story</span>
+      </header>
+
+      <div className="demo-help"><CheckCircle2 /><span><b>Just follow the story.</b>No setup or technical knowledge is needed. Use Next to see how the workers collaborate.</span></div>
+
+      <div className="story-map" role="tablist" aria-label={`${project.name} story sections`}>
+        {project.steps.map((item, index) => {
+          const ItemIcon = icons[item.worker]
+          return (
+            <button
+              key={item.id}
+              className={activeIndex === index && !finished ? 'active' : ''}
+              onClick={() => { setActiveIndex(index); setFinished(false) }}
+              role="tab"
+              aria-selected={activeIndex === index && !finished}
+            >
+              <span><ItemIcon /></span>
+              <b>{item.navLabel}</b>
+            </button>
+          )
+        })}
+      </div>
+
+      {!finished ? (
+        <section className="story-workspace">
+          <div className="story-explanation">
+            <div className="story-position">{activeIndex + 1} of {project.steps.length}</div>
+            <div className="active-worker" style={{ '--worker-color': worker.accent } as React.CSSProperties}>
+              <span><Icon /></span><div><small>Worker helping now</small><b>{worker.name}</b></div>
+            </div>
+            <h2>{step.title}</h2>
+            <div className="beginner-block">
+              <small>The situation</small>
+              <p>{step.input}</p>
+            </div>
+            <div className="beginner-block featured">
+              <small>How Ezassist helps</small>
+              <p>{step.plainAction}</p>
+              <strong>{step.output}</strong>
+            </div>
+            <div className="beginner-notes">
+              <div className="beginner-value"><Check /><span><b>Why this is useful</b>{step.value}</span></div>
+              <div className="beginner-decision"><ShieldCheck /><span><b>A person still decides</b>{step.decision}</span></div>
+            </div>
+            <div className="story-controls">
+              <button className="secondary-button" disabled={activeIndex === 0} onClick={() => setActiveIndex(index => index - 1)}><ArrowLeft /> Previous</button>
+              <button className="primary-button" onClick={next}>{activeIndex === project.steps.length - 1 ? 'Finish demo' : 'Next'} <ArrowRight /></button>
+            </div>
+          </div>
+          <div className="story-example">
+            <div className="artifact-title"><span>What the participant sees</span><small>Simulated example</small></div>
+            <StepPreview projectId={projectId} stepId={step.id} />
+          </div>
+        </section>
+      ) : (
+        <section className="demo-finish-screen">
+          <CheckCircle2 />
+          <h2>You followed the complete solution.</h2>
+          <p>{project.result}</p>
+          <div className="finish-summary">
+            {project.steps.map(item => { const StepIcon = icons[item.worker]; return <span key={item.id}><StepIcon />{getWorker(item.worker).shortName}</span> })}
+          </div>
+          <small>Everything shown was simulated. No external action occurred.</small>
+          <button className="primary-button" onClick={reset}><RefreshCcw /> Run the story again</button>
+        </section>
+      )}
+    </div>
+  )
 }
