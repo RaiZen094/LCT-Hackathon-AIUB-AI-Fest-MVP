@@ -261,6 +261,7 @@ p { line-height: 1.65; }
 .intro-outcome div { display: flex; flex-direction: column; gap: 4px; }
 .intro-outcome p { margin: 0; color: var(--muted); font-size: 14px; }
 .matcher-builder { display: grid; gap: 70px; }
+.matcher-builder > *, .recipe-picker, .team-builder, .idea-customizer, .pattern-explainer { min-width: 0; }
 .matcher-section-heading { display: grid; grid-template-columns: 54px 1fr; gap: 18px; align-items: start; max-width: 760px; margin-bottom: 28px; }
 .matcher-section-heading > span { width: 54px; height: 36px; display: grid; place-items: center; border: 1px solid var(--border-strong); border-radius: 9px; color: var(--accent); font-size: 12px; font-weight: 800; }
 .matcher-section-heading h2 { margin-bottom: 6px; font-size: 32px; }
@@ -283,6 +284,8 @@ p { line-height: 1.65; }
 .pattern-context p { max-width: 780px; margin: 0; color: var(--text); font-size: 16px; }
 .pattern-relevance { display: grid; grid-template-columns: .8fr auto 1.4fr auto .9fr; align-items: stretch; gap: 12px; padding-top: 20px; border-top: 1px solid var(--border-strong); }
 .pattern-relevance > div { min-height: 142px; display: flex; flex-direction: column; gap: 10px; padding: 17px; border-radius: 10px; background: rgba(11, 16, 17, .48); }
+.pattern-relevance > div, .pattern-context, .pattern-guidance { min-width: 0; }
+.pattern-explainer p, .pattern-explainer strong { overflow-wrap: anywhere; }
 .pattern-relevance > div.relevance-focus { border: 1px solid rgba(66, 199, 201, .45); background: var(--surface); }
 .pattern-relevance small { color: var(--accent); font-weight: 800; }
 .pattern-relevance strong { font-size: 13px; line-height: 1.5; }
@@ -538,8 +541,9 @@ p { line-height: 1.65; }
   .orchestration-workers { grid-template-columns: 1fr; padding: 20px 0; }
   .simple-section { padding: 70px 0; }
   .four-moves, .project-pair, .demo-choices, .fit-grid { grid-template-columns: 1fr; }
-  .recipe-options, .optional-workers > div:last-child { grid-template-columns: 1fr; }
-  .recipe-options button { min-height: 0; }
+  .recipe-options { display: flex; gap: 10px; overflow-x: auto; padding: 2px 2px 12px; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; overscroll-behavior-inline: contain; -webkit-overflow-scrolling: touch; }
+  .recipe-options button { min-height: 168px; flex: 0 0 min(82vw, 340px); scroll-snap-align: start; }
+  .optional-workers > div:last-child { grid-template-columns: 1fr; }
   .pattern-explainer { padding: 24px; }
   .pattern-explainer header { align-items: flex-start; flex-direction: column; gap: 7px; }
   .pattern-explainer header h3 { text-align: left; }
@@ -558,10 +562,11 @@ p { line-height: 1.65; }
   .worker-browser { grid-template-columns: 1fr; }
   .sme-journey { gap: 30px; margin-bottom: 65px; padding: 26px; }
   .sme-story { grid-template-columns: 1fr; }
-  .sme-path { display: grid; grid-template-columns: 1fr 1fr; }
-  .sme-stage { min-height: 420px; }
-  .worker-selector { display: grid; grid-template-columns: 1fr 1fr; }
-  .worker-selector > button { grid-template-columns: auto 1fr; }
+  .sme-path { display: flex; flex-direction: row; gap: 8px; overflow-x: auto; padding: 2px 2px 10px; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; overscroll-behavior-inline: contain; -webkit-overflow-scrolling: touch; }
+  .sme-path button { min-height: 64px; flex: 0 0 190px; scroll-snap-align: start; }
+  .sme-stage { min-height: 0; }
+  .worker-selector { display: flex; flex-direction: row; gap: 8px; overflow-x: auto; padding: 2px 2px 10px; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; overscroll-behavior-inline: contain; -webkit-overflow-scrolling: touch; }
+  .worker-selector > button { width: auto; min-height: 70px; flex: 0 0 190px; grid-template-columns: auto 1fr; scroll-snap-align: start; border-color: var(--border); background: var(--surface-soft); }
   .worker-selector > button > svg, .worker-selector small { display: none; }
   .worker-detail { min-height: 0; position: static; padding: 28px; }
   .worker-detail-title h2 { font-size: 28px; }
@@ -569,14 +574,14 @@ p { line-height: 1.65; }
   .demo-heading { grid-template-columns: auto 1fr; }
   .demo-heading > span { display: none; }
   .demo-help { align-items: flex-start; }
-  .story-map { display: flex; overflow-x: auto; padding-bottom: 8px; scroll-snap-type: x mandatory; }
+  .story-map { display: flex; overflow-x: auto; padding: 2px 2px 10px; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; overscroll-behavior-inline: contain; -webkit-overflow-scrolling: touch; }
   .story-map button { min-width: 170px; scroll-snap-align: start; }
   .story-workspace { grid-template-columns: 1fr; }
   .story-example { border-top: 1px solid var(--border); border-left: 0; }
   .story-explanation, .story-example { padding: 26px; }
   .beginner-notes { grid-template-columns: 1fr; }
   .story-example .artifact-preview { min-height: 0; }
-  .demo-progress { display: flex; overflow-x: auto; padding-bottom: 8px; scroll-snap-type: x mandatory; }
+  .demo-progress { display: flex; overflow-x: auto; padding: 2px 2px 10px; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; overscroll-behavior-inline: contain; -webkit-overflow-scrolling: touch; }
   .demo-progress button { min-width: 220px; scroll-snap-align: start; }
   .guided-workspace { grid-template-columns: 1fr; }
   .step-explanation, .artifact-area, .decision-area { grid-column: auto; padding: 26px; border: 0; border-bottom: 1px solid var(--border); }
@@ -589,14 +594,13 @@ p { line-height: 1.65; }
 @media (max-width: 520px) {
   .hero-actions { flex-direction: column; }
   .hero-actions button { width: 100%; }
-  .four-moves, .worker-selector { grid-template-columns: 1fr; }
+  .four-moves { grid-template-columns: 1fr; }
   .project-card { grid-template-columns: 1fr; }
   .project-card > button { grid-column: auto; }
   .demo-choice-top { align-items: flex-start; flex-direction: column; }
   .demo-choice-top small { text-align: left; }
   .demo-choices dl > div { grid-template-columns: 1fr; gap: 5px; }
   .worker-detail-title { align-items: flex-start; }
-  .sme-path { grid-template-columns: 1fr; }
   .sme-stage nav { grid-template-columns: 1fr 1fr; }
   .sme-stage nav span { grid-row: 2; grid-column: 1 / 3; text-align: center; }
   .story-controls { flex-direction: column-reverse; }
