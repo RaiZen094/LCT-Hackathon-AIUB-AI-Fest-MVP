@@ -42,30 +42,30 @@ const bangladeshProblems: {
   {
     id: 'sme',
     label: 'Small business',
-    context: 'Facebook, WhatsApp and phone orders',
-    title: 'Customer messages keep arriving, even when the owner is busy.',
-    problem: 'Questions, orders and follow-ups are scattered across familiar channels. A small team can miss a sale or leave a customer waiting.',
-    response: 'Voice and Service Workers capture each request. Content and Growth Workers prepare clear replies and practical follow-ups for the owner to review.',
+    context: 'Orders from Facebook, WhatsApp and calls',
+    title: 'The business is growing. The inbox is growing faster.',
+    problem: 'One customer asks for a price on Facebook. Another orders on WhatsApp. Someone else calls. The owner is serving customers, checking stock and trying not to miss anyone.',
+    response: 'Voice and Service Workers bring every request into one flow. Content and Growth Workers prepare replies and follow-ups. The owner reviews everything and stays in control.',
     icon: Store,
     workers: ['voice', 'service', 'content', 'growth'],
   },
   {
     id: 'service-access',
     label: 'Service access',
-    context: 'Bangla voice and simpler digital steps',
-    title: 'A useful service can still feel unreachable behind a long form.',
-    problem: 'Typing, English-heavy interfaces and unfamiliar websites can stop people before they explain what they need, especially on a basic phone or shared device.',
-    response: 'Voice Worker listens in a familiar format. Service Worker structures the request, while Landing Worker presents the next step in a simple mobile flow.',
+    context: 'Bangla voice instead of a long form',
+    title: 'The service is online. The person who needs it still cannot reach it.',
+    problem: 'Picture a long English form on a small screen. The person knows exactly what they need, but explaining it in writing is the hardest part.',
+    response: 'Voice Worker lets them explain it naturally in Bangla. Service Worker organizes the request. Landing Worker shows the next step in a simple mobile view.',
     icon: Landmark,
     workers: ['voice', 'service', 'landing'],
   },
   {
     id: 'flood',
     label: 'Flood response',
-    context: 'Calls, reports and urgent local needs',
-    title: 'Urgent reports arrive quickly, but not in one organized format.',
-    problem: 'During a flood, people may report water levels, shelter needs and blocked roads by voice or message. Important details can become difficult to compare.',
-    response: 'Voice Worker captures the report, Service Worker sorts it, and Content Worker prepares clear updates. A responsible person checks every action.',
+    context: 'Calls, messages and urgent local needs',
+    title: 'Reports are coming in. The hard part is knowing what needs attention first.',
+    problem: 'One person calls about rising water. Another messages about a blocked road. A volunteer reports a shelter need. Every detail matters, but each arrives differently.',
+    response: 'Voice Worker captures the report. Service Worker organizes it. Content Worker prepares a clear update. A responsible person checks what happens next.',
     icon: CloudRain,
     workers: ['voice', 'service', 'content'],
   },
@@ -118,9 +118,9 @@ function Overview({ go }: { go: (view: View) => void }) {
     <div className="page overview-page">
       <section className="bangladesh-context" aria-labelledby="bangladesh-context-title">
         <div className="bangladesh-context-heading">
-          <span>Built around Bangladesh</span>
-          <h2 id="bangladesh-context-title">Start with a problem people already recognize.</h2>
-          <p>A useful AI service should meet people in Bangla, by voice, and through the channels they already use. Choose a local problem to see how that becomes a worker-powered solution.</p>
+          <span>Built around real life in Bangladesh</span>
+          <h2 id="bangladesh-context-title">AI should fit Bangladesh, not the other way around.</h2>
+          <p>A customer calls. A shop owner checks Facebook. A family sends a flood report in Bangla. Ezassist starts with the way people already communicate.</p>
         </div>
         <div className="bangladesh-problem-explorer">
           <div className="bangladesh-problem-tabs" role="group" aria-label="Bangladesh problem examples">
@@ -149,12 +149,12 @@ function Overview({ go }: { go: (view: View) => void }) {
             aria-live="polite"
           >
             <div>
-              <span>The problem</span>
+              <span>Picture this</span>
               <h3>{activeProblem.title}</h3>
               <p>{activeProblem.problem}</p>
             </div>
             <div className="bangladesh-worker-response">
-              <span>How the workers help</span>
+              <span>What Ezassist does</span>
               <p>{activeProblem.response}</p>
               <div aria-label="Suggested AI workers">
                 {activeProblem.workers.map(workerId => <WorkerMark key={workerId} id={workerId} />)}
@@ -162,14 +162,14 @@ function Overview({ go }: { go: (view: View) => void }) {
             </div>
           </article>
         </div>
-        <p className="bangladesh-context-result"><Zap aria-hidden="true" /><span><b>The idea:</b> participants do not need to invent a new AI model. They can combine focused workers around a Bangladesh problem and keep a person responsible for the final decision.</span></p>
+        <p className="bangladesh-context-result"><Zap aria-hidden="true" /><span><b>The pitch:</b> we are not asking people to adapt to AI. Ezassist brings AI into the channels they already use, while people stay in control.</span></p>
       </section>
 
       <section className="hero">
         <div className="hero-copy">
           <span className="kicker">Technology partner showcase for Hack for Humanity Bangladesh 2026</span>
           <h1>Seven workers.<br />One solution.</h1>
-          <p>See what each Ezassist worker does, then follow how the right workers combine around a real civic problem.</p>
+          <p>Each worker handles one job. Together, they turn a real local problem into a solution people can understand and use.</p>
           <div className="hero-actions">
             <button className="primary-button" onClick={() => go('matcher')}>Match workers to your idea <ArrowRight /></button>
             <button className="secondary-button" onClick={() => go('workers')}>Learn how workers work</button>
