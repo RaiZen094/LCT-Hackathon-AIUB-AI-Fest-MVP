@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import {
   ArrowRight, Bot, Check, ChevronRight, CircleHelp, CloudRain, Headphones,
-  Home, LayoutTemplate, Leaf, Megaphone, Menu, Mic2, PenLine, Rocket,
-  ShieldCheck, Target, TrendingUp, UserCheck, Users, X, Zap,
+  Home, Languages, LayoutTemplate, Leaf, Megaphone, Menu, Mic2, PenLine,
+  Rocket, ShieldCheck, Smartphone, Target, TrendingUp, UserCheck, Users,
+  X, Zap,
 } from 'lucide-react'
 import { GuidedDemo } from './OperationalDemos'
 import { IdeaMatcher } from './IdeaMatcher'
@@ -87,6 +88,20 @@ function Overview({ go }: { go: (view: View) => void }) {
           </div>
           <div className="orchestration-result"><Check /><span><b>Reviewable output</b><small>A person decides what happens next</small></span></div>
         </div>
+      </section>
+
+      <section className="bangladesh-context" aria-labelledby="bangladesh-context-title">
+        <div className="bangladesh-context-heading">
+          <span>Built for Bangladesh</span>
+          <h2 id="bangladesh-context-title">Digital access is growing. Digital confidence is still uneven.</h2>
+          <p>Smartphones are widespread, but feature phones (button phones), voice calls, Bangla communication, and familiar apps still shape how many people use digital services.</p>
+        </div>
+        <div className="bangladesh-context-points">
+          <article><Smartphone aria-hidden="true" /><div><h3>Meet people where they are</h3><p>Services should work around familiar devices and behaviors instead of expecting everyone to navigate a complex website.</p></div></article>
+          <article><Mic2 aria-hidden="true" /><div><h3>Let people speak naturally</h3><p>Voice-first intake helps people explain a need when typing, spelling, or completing a long form becomes a barrier.</p></div></article>
+          <article><Languages aria-hidden="true" /><div><h3>Make the service understandable</h3><p>Bangla and English content, simple interfaces, and human checkpoints turn technology into a service people can trust.</p></div></article>
+        </div>
+        <p className="bangladesh-context-result"><Zap aria-hidden="true" /><span><b>Where Ezassist fits:</b> specialized workers connect voice, service handling, clear communication, simple interfaces, and follow-up into one inclusive workflow.</span></p>
       </section>
 
       <section className="simple-section how-it-works">
