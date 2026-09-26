@@ -29,48 +29,6 @@ const workerIcons: Record<WorkerId, typeof Bot> = {
   landing: LayoutTemplate,
 }
 
-const bangladeshProblems: {
-  id: string
-  label: string
-  context: string
-  title: string
-  problem: string
-  response: string
-  icon: typeof Bot
-  workers: WorkerId[]
-}[] = [
-  {
-    id: 'sme',
-    label: 'Small business',
-    context: 'Orders from Facebook, WhatsApp and calls',
-    title: 'The business is growing. The inbox is growing faster.',
-    problem: 'One customer asks for a price on Facebook. Another orders on WhatsApp. Someone else calls. The owner is serving customers, checking stock and trying not to miss anyone.',
-    response: 'Voice and Service Workers bring every request into one flow. Content and Growth Workers prepare replies and follow-ups. The owner reviews everything and stays in control.',
-    icon: Store,
-    workers: ['voice', 'service', 'content', 'growth'],
-  },
-  {
-    id: 'service-access',
-    label: 'Service access',
-    context: 'Bangla voice instead of a long form',
-    title: 'The service is online. The person who needs it still cannot reach it.',
-    problem: 'Picture a long English form on a small screen. The person knows exactly what they need, but explaining it in writing is the hardest part.',
-    response: 'Voice Worker lets them explain it naturally in Bangla. Service Worker organizes the request. Landing Worker shows the next step in a simple mobile view.',
-    icon: Landmark,
-    workers: ['voice', 'service', 'landing'],
-  },
-  {
-    id: 'flood',
-    label: 'Flood response',
-    context: 'Calls, messages and urgent local needs',
-    title: 'Reports are coming in. The hard part is knowing what needs attention first.',
-    problem: 'One person calls about rising water. Another messages about a blocked road. A volunteer reports a shelter need. Every detail matters, but each arrives differently.',
-    response: 'Voice Worker captures the report. Service Worker organizes it. Content Worker prepares a clear update. A responsible person checks what happens next.',
-    icon: CloudRain,
-    workers: ['voice', 'service', 'content'],
-  },
-]
-
 function WorkerMark({ id, label = true }: { id: WorkerId; label?: boolean }) {
   const worker = getWorker(id)
   const Icon = workerIcons[id]
@@ -111,9 +69,6 @@ function AppHeader({ view, go }: { view: View; go: (view: View) => void }) {
 }
 
 function Overview({ go }: { go: (view: View) => void }) {
-  const [activeProblemId, setActiveProblemId] = useState(bangladeshProblems[0].id)
-  const activeProblem = bangladeshProblems.find(problem => problem.id === activeProblemId) ?? bangladeshProblems[0]
-
   return (
     <div className="page overview-page">
       <section className="bangladesh-context" aria-labelledby="bangladesh-context-title">
@@ -122,44 +77,18 @@ function Overview({ go }: { go: (view: View) => void }) {
           <h2 id="bangladesh-context-title">AI should fit Bangladesh, not the other way around.</h2>
           <p>A customer calls. A shop owner checks Facebook. A family sends a flood report in Bangla. Ezassist starts with the way people already communicate.</p>
         </div>
-        <div className="bangladesh-problem-explorer">
-          <div className="bangladesh-problem-tabs" role="group" aria-label="Bangladesh problem examples">
-            {bangladeshProblems.map(problem => {
-              const Icon = problem.icon
-              const isActive = problem.id === activeProblem.id
-              return (
-                <button
-                  key={problem.id}
-                  type="button"
-                  aria-pressed={isActive}
-                  aria-controls="bangladesh-problem-panel"
-                  className={isActive ? 'active' : ''}
-                  onClick={() => setActiveProblemId(problem.id)}
-                >
-                  <Icon aria-hidden="true" />
-                  <span><b>{problem.label}</b><small>{problem.context}</small></span>
-                  <ChevronRight aria-hidden="true" />
-                </button>
-              )
-            })}
-          </div>
-          <article
-            className="bangladesh-problem-detail"
-            id="bangladesh-problem-panel"
-            aria-live="polite"
-          >
-            <div>
-              <span>Picture this</span>
-              <h3>{activeProblem.title}</h3>
-              <p>{activeProblem.problem}</p>
-            </div>
-            <div className="bangladesh-worker-response">
-              <span>What Ezassist does</span>
-              <p>{activeProblem.response}</p>
-              <div aria-label="Suggested AI workers">
-                {activeProblem.workers.map(workerId => <WorkerMark key={workerId} id={workerId} />)}
-              </div>
-            </div>
+        <div className="bangladesh-stories" aria-label="Familiar problems in Bangladesh">
+          <article>
+            <Store aria-hidden="true" />
+            <div><h3>A shop owner cannot answer everywhere at once.</h3><p>Orders arrive through Facebook, WhatsApp and phone calls while the owner is serving customers. Ezassist brings those requests into one clear flow, ready for the owner to review.</p></div>
+          </article>
+          <article>
+            <Landmark aria-hidden="true" />
+            <div><h3>An online service can still feel out of reach.</h3><p>A long English form on a small screen can become the biggest barrier. With Ezassist, a person can explain the need naturally in Bangla and receive a simple next step.</p></div>
+          </article>
+          <article>
+            <CloudRain aria-hidden="true" />
+            <div><h3>Flood reports do not arrive in one neat format.</h3><p>Calls and messages may describe rising water, blocked roads or shelter needs. Ezassist organizes the information so a responsible person can see what needs attention.</p></div>
           </article>
         </div>
         <p className="bangladesh-context-result"><Zap aria-hidden="true" /><span><b>The pitch:</b> we are not asking people to adapt to AI. Ezassist brings AI into the channels they already use, while people stay in control.</span></p>
