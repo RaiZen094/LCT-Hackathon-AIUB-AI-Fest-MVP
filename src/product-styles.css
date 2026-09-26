@@ -150,12 +150,25 @@ p { line-height: 1.65; }
 .bangladesh-context-heading > span { display: block; margin-bottom: 16px; color: var(--accent); font-size: 13px; font-weight: 800; }
 .bangladesh-context-heading h2 { max-width: 520px; margin-bottom: 16px; font-size: clamp(30px, 3.2vw, 44px); line-height: 1.08; }
 .bangladesh-context-heading p { max-width: 560px; margin: 0; color: var(--muted); font-size: 16px; }
-.bangladesh-context-points { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 1px solid var(--border-strong); }
-.bangladesh-context-points article { display: grid; grid-template-rows: auto auto; align-content: start; gap: 26px; padding: 24px 20px 10px 0; }
-.bangladesh-context-points article + article { padding-left: 20px; border-left: 1px solid var(--border); }
-.bangladesh-context-points article > svg { width: 25px; height: 25px; color: var(--accent); }
-.bangladesh-context-points h3 { margin-bottom: 9px; font-size: 17px; line-height: 1.25; }
-.bangladesh-context-points p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+.bangladesh-problem-explorer { min-width: 0; display: grid; grid-template-columns: minmax(190px, .72fr) minmax(0, 1.28fr); border-top: 1px solid var(--border-strong); }
+.bangladesh-problem-tabs { display: flex; flex-direction: column; padding-top: 10px; border-right: 1px solid var(--border); }
+.bangladesh-problem-tabs button { width: 100%; min-height: 84px; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; border: 0; border-radius: 10px 0 0 10px; padding: 14px 12px; color: var(--muted); text-align: left; background: transparent; }
+.bangladesh-problem-tabs button:hover { color: var(--text); background: var(--surface-strong); }
+.bangladesh-problem-tabs button.active { color: var(--text); background: var(--accent-dark); }
+.bangladesh-problem-tabs button > svg:first-child { width: 22px; height: 22px; color: var(--accent); }
+.bangladesh-problem-tabs button > svg:last-child { width: 17px; height: 17px; color: var(--quiet); }
+.bangladesh-problem-tabs button.active > svg:last-child { color: var(--accent); transform: translateX(2px); }
+.bangladesh-problem-tabs button span { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.bangladesh-problem-tabs button b { font-size: 14px; }
+.bangladesh-problem-tabs button small { color: var(--quiet); font-size: 11px; line-height: 1.35; }
+.bangladesh-problem-detail { min-width: 0; padding: 24px 0 0 28px; }
+.bangladesh-problem-detail > div > span { display: block; margin-bottom: 10px; color: var(--accent); font-size: 12px; font-weight: 800; }
+.bangladesh-problem-detail h3 { margin-bottom: 10px; font-size: 22px; line-height: 1.2; }
+.bangladesh-problem-detail p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+.bangladesh-worker-response { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--border); }
+.bangladesh-worker-response > div { display: flex; flex-wrap: wrap; gap: 14px 20px; margin-top: 18px; }
+.bangladesh-worker-response .worker-mark > span { width: 30px; height: 30px; border-radius: 8px; }
+.bangladesh-worker-response .worker-mark b { font-size: 12px; }
 .bangladesh-context-result { grid-column: 1 / 3; display: flex; align-items: flex-start; gap: 12px; margin: 0; padding: 18px; border-left: 3px solid var(--success); color: var(--muted); background: rgba(111, 214, 165, .06); }
 .bangladesh-context-result > svg { color: var(--success); flex: 0 0 auto; }
 .bangladesh-context-result b { color: var(--text); }
@@ -557,9 +570,10 @@ p { line-height: 1.65; }
   .hero-visual { min-height: 0; padding: 24px; }
   .orchestration-workers { grid-template-columns: 1fr; padding: 20px 0; }
   .bangladesh-context { gap: 28px; padding: 26px; }
-  .bangladesh-context-points { grid-template-columns: 1fr; }
-  .bangladesh-context-points article { grid-template-columns: auto 1fr; grid-template-rows: auto; gap: 14px; padding: 18px 0; }
-  .bangladesh-context-points article + article { padding-left: 0; border-top: 1px solid var(--border); border-left: 0; }
+  .bangladesh-problem-explorer { grid-template-columns: 1fr; }
+  .bangladesh-problem-tabs { flex-direction: row; gap: 8px; overflow-x: auto; padding: 10px 0 12px; border-right: 0; border-bottom: 1px solid var(--border); scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
+  .bangladesh-problem-tabs button { min-height: 76px; flex: 0 0 min(74vw, 270px); border-radius: 10px; scroll-snap-align: start; }
+  .bangladesh-problem-detail { padding: 24px 0 0; }
   .simple-section { padding: 70px 0; }
   .four-moves, .project-pair, .demo-choices, .fit-grid { grid-template-columns: 1fr; }
   .recipe-options { display: flex; gap: 10px; overflow-x: auto; padding: 2px 2px 12px; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; overscroll-behavior-inline: contain; -webkit-overflow-scrolling: touch; }

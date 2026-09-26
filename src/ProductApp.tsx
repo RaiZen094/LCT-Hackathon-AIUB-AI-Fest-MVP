@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import {
   ArrowRight, Bot, Check, ChevronRight, CircleHelp, CloudRain, Headphones,
-  Home, Languages, LayoutTemplate, Leaf, Megaphone, Menu, Mic2, PenLine,
-  Rocket, ShieldCheck, Smartphone, Target, TrendingUp, UserCheck, Users,
+  Home, Landmark, LayoutTemplate, Leaf, Megaphone, Menu, Mic2, PenLine,
+  Rocket, ShieldCheck, Store, Target, TrendingUp, UserCheck, Users,
   X, Zap,
 } from 'lucide-react'
 import { GuidedDemo } from './OperationalDemos'
@@ -28,6 +28,48 @@ const workerIcons: Record<WorkerId, typeof Bot> = {
   campaign: Megaphone,
   landing: LayoutTemplate,
 }
+
+const bangladeshProblems: {
+  id: string
+  label: string
+  context: string
+  title: string
+  problem: string
+  response: string
+  icon: typeof Bot
+  workers: WorkerId[]
+}[] = [
+  {
+    id: 'sme',
+    label: 'Small business',
+    context: 'Facebook, WhatsApp and phone orders',
+    title: 'Customer messages keep arriving, even when the owner is busy.',
+    problem: 'Questions, orders and follow-ups are scattered across familiar channels. A small team can miss a sale or leave a customer waiting.',
+    response: 'Voice and Service Workers capture each request. Content and Growth Workers prepare clear replies and practical follow-ups for the owner to review.',
+    icon: Store,
+    workers: ['voice', 'service', 'content', 'growth'],
+  },
+  {
+    id: 'service-access',
+    label: 'Service access',
+    context: 'Bangla voice and simpler digital steps',
+    title: 'A useful service can still feel unreachable behind a long form.',
+    problem: 'Typing, English-heavy interfaces and unfamiliar websites can stop people before they explain what they need, especially on a basic phone or shared device.',
+    response: 'Voice Worker listens in a familiar format. Service Worker structures the request, while Landing Worker presents the next step in a simple mobile flow.',
+    icon: Landmark,
+    workers: ['voice', 'service', 'landing'],
+  },
+  {
+    id: 'flood',
+    label: 'Flood response',
+    context: 'Calls, reports and urgent local needs',
+    title: 'Urgent reports arrive quickly, but not in one organized format.',
+    problem: 'During a flood, people may report water levels, shelter needs and blocked roads by voice or message. Important details can become difficult to compare.',
+    response: 'Voice Worker captures the report, Service Worker sorts it, and Content Worker prepares clear updates. A responsible person checks every action.',
+    icon: CloudRain,
+    workers: ['voice', 'service', 'content'],
+  },
+]
 
 function WorkerMark({ id, label = true }: { id: WorkerId; label?: boolean }) {
   const worker = getWorker(id)
@@ -69,20 +111,58 @@ function AppHeader({ view, go }: { view: View; go: (view: View) => void }) {
 }
 
 function Overview({ go }: { go: (view: View) => void }) {
+  const [activeProblemId, setActiveProblemId] = useState(bangladeshProblems[0].id)
+  const activeProblem = bangladeshProblems.find(problem => problem.id === activeProblemId) ?? bangladeshProblems[0]
+
   return (
     <div className="page overview-page">
       <section className="bangladesh-context" aria-labelledby="bangladesh-context-title">
         <div className="bangladesh-context-heading">
-          <span>Built for Bangladesh</span>
-          <h2 id="bangladesh-context-title">Digital access is growing. Digital confidence is still uneven.</h2>
-          <p>Smartphones are widespread, but feature phones (button phones), voice calls, Bangla communication, and familiar apps still shape how many people use digital services.</p>
+          <span>Built around Bangladesh</span>
+          <h2 id="bangladesh-context-title">Start with a problem people already recognize.</h2>
+          <p>A useful AI service should meet people in Bangla, by voice, and through the channels they already use. Choose a local problem to see how that becomes a worker-powered solution.</p>
         </div>
-        <div className="bangladesh-context-points">
-          <article><Smartphone aria-hidden="true" /><div><h3>Meet people where they are</h3><p>Services should work around familiar devices and behaviors instead of expecting everyone to navigate a complex website.</p></div></article>
-          <article><Mic2 aria-hidden="true" /><div><h3>Let people speak naturally</h3><p>Voice-first intake helps people explain a need when typing, spelling, or completing a long form becomes a barrier.</p></div></article>
-          <article><Languages aria-hidden="true" /><div><h3>Make the service understandable</h3><p>Bangla and English content, simple interfaces, and human checkpoints turn technology into a service people can trust.</p></div></article>
+        <div className="bangladesh-problem-explorer">
+          <div className="bangladesh-problem-tabs" role="group" aria-label="Bangladesh problem examples">
+            {bangladeshProblems.map(problem => {
+              const Icon = problem.icon
+              const isActive = problem.id === activeProblem.id
+              return (
+                <button
+                  key={problem.id}
+                  type="button"
+                  aria-pressed={isActive}
+                  aria-controls="bangladesh-problem-panel"
+                  className={isActive ? 'active' : ''}
+                  onClick={() => setActiveProblemId(problem.id)}
+                >
+                  <Icon aria-hidden="true" />
+                  <span><b>{problem.label}</b><small>{problem.context}</small></span>
+                  <ChevronRight aria-hidden="true" />
+                </button>
+              )
+            })}
+          </div>
+          <article
+            className="bangladesh-problem-detail"
+            id="bangladesh-problem-panel"
+            aria-live="polite"
+          >
+            <div>
+              <span>The problem</span>
+              <h3>{activeProblem.title}</h3>
+              <p>{activeProblem.problem}</p>
+            </div>
+            <div className="bangladesh-worker-response">
+              <span>How the workers help</span>
+              <p>{activeProblem.response}</p>
+              <div aria-label="Suggested AI workers">
+                {activeProblem.workers.map(workerId => <WorkerMark key={workerId} id={workerId} />)}
+              </div>
+            </div>
+          </article>
         </div>
-        <p className="bangladesh-context-result"><Zap aria-hidden="true" /><span><b>Where Ezassist fits:</b> specialized workers connect voice, service handling, clear communication, simple interfaces, and follow-up into one inclusive workflow.</span></p>
+        <p className="bangladesh-context-result"><Zap aria-hidden="true" /><span><b>The idea:</b> participants do not need to invent a new AI model. They can combine focused workers around a Bangladesh problem and keep a person responsible for the final decision.</span></p>
       </section>
 
       <section className="hero">
