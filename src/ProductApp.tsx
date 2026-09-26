@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import {
   ArrowRight, Bot, Check, ChevronRight, CircleHelp, CloudRain, Headphones,
-  Home, Landmark, LayoutTemplate, Leaf, Megaphone, Menu, Mic2, PenLine,
-  Rocket, ShieldCheck, Store, Target, TrendingUp, UserCheck, Users,
+  Home, LayoutTemplate, Leaf, Megaphone, Menu, Mic2, PenLine,
+  Rocket, ShieldCheck, Target, TrendingUp, UserCheck, Users,
   X, Zap,
 } from 'lucide-react'
 import { GuidedDemo } from './OperationalDemos'
@@ -75,23 +75,8 @@ function Overview({ go }: { go: (view: View) => void }) {
         <div className="bangladesh-context-heading">
           <span>Built around real life in Bangladesh</span>
           <h2 id="bangladesh-context-title">AI should fit Bangladesh, not the other way around.</h2>
-          <p>A customer calls. A shop owner checks Facebook. A family sends a flood report in Bangla. Ezassist starts with the way people already communicate.</p>
         </div>
-        <div className="bangladesh-stories" aria-label="Familiar problems in Bangladesh">
-          <article>
-            <Store aria-hidden="true" />
-            <div><h3>A shop owner cannot answer everywhere at once.</h3><p>Orders arrive through Facebook, WhatsApp and phone calls while the owner is serving customers. Ezassist brings those requests into one clear flow, ready for the owner to review.</p></div>
-          </article>
-          <article>
-            <Landmark aria-hidden="true" />
-            <div><h3>An online service can still feel out of reach.</h3><p>A long English form on a small screen can become the biggest barrier. With Ezassist, a person can explain the need naturally in Bangla and receive a simple next step.</p></div>
-          </article>
-          <article>
-            <CloudRain aria-hidden="true" />
-            <div><h3>Flood reports do not arrive in one neat format.</h3><p>Calls and messages may describe rising water, blocked roads or shelter needs. Ezassist organizes the information so a responsible person can see what needs attention.</p></div>
-          </article>
-        </div>
-        <p className="bangladesh-context-result"><Zap aria-hidden="true" /><span><b>The pitch:</b> we are not asking people to adapt to AI. Ezassist brings AI into the channels they already use, while people stay in control.</span></p>
+        <p className="bangladesh-context-copy">In Bangladesh, digital life often starts with a phone call, a Facebook message, a WhatsApp order or a conversation in Bangla, not a complicated website. A shop owner may be serving customers while messages pile up, an urgent flood report may arrive as a call, and someone seeking a service may struggle with a long English form. Ezassist works with these familiar habits: its AI workers listen, organize and prepare the next step, while people stay in control.</p>
       </section>
 
       <section className="hero">
